@@ -150,6 +150,8 @@ const ChatterBox = ({
   setShow,
   ...props
 }) => {
+  const [offset, setOffset] = React.useState(200);
+
   const bottom = show & CHATSTATE.VISIBLE ? 10 : -1000;
   const quiet = () => {
     setShow((s) => Number(s) + CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
@@ -185,7 +187,9 @@ const ChatterBox = ({
           transition: "all 0.3s linear",
           right: 10,
           width: "calc(100vw - 20px)",
-          height: "calc(100vh - 180px)",
+          outline: "dotted 1px green",
+          outlineOffset: 1,
+          height: `calc(100vh - ${offset}px)`,
           overflow: "hidden",
         }}
       >
@@ -197,13 +201,21 @@ const ChatterBox = ({
           <Box
             sx={{
               mb: 1,
-              height: "calc(100vh - 240px)",
+              outline: "dotted 1px purple",
+              outlineOffset: 2,
+              height: `calc(100vh - ${offset + 60}px)`,
               overflow: "scroll",
             }}
           >
             {chatMem.map((c, m) => (
               <ChatText key={m} {...c} />
             ))}
+
+            <TextField
+              size="small"
+              onChange={(e) => setOffset(Number(e.target.value))}
+              value={offset}
+            />
           </Box>
 
           {!!querying && <LinearProgress />}

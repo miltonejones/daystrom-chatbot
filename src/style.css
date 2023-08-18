@@ -4,16 +4,20 @@ p {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-ul,
-ul li {
+li {
   font-family: Roboto;
+  font-size: 0.9rem;
+}
+
+ul,
+ul li.normal {
   list-style: none;
   margin: 0;
   padding: 4px 8px;
   cursor: pointer;
 }
 
-li:hover {
+li.normal:hover {
   text-decoration: underline;
 }
 
@@ -21,7 +25,7 @@ li.attach {
   font-weight: 600;
 }
 
-li:before {
+li.normal:before {
   content: "🕔";
   margin-right: 4px;
 }

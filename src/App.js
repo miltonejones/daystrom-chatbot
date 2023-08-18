@@ -165,6 +165,7 @@ export default function App() {
             </IconButton>{" "}
             <Button
               variant="outlined"
+              size="small"
               onClick={() => {
                 setShow(0);
                 setPayload({});
@@ -180,7 +181,7 @@ export default function App() {
           <ul>
             {Object.keys(convos).map((key) => (
               <li
-                className={!!convos[key].agent ? "attach" : ""}
+                className={!!convos[key].agent ? "attach" : "normal"}
                 onClick={() => {
                   setChat(convos[key]);
                 }}

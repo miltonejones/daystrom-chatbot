@@ -242,6 +242,7 @@ function ChatText({ role, content }) {
           color: (t) =>
             role === "user" ? t.palette.common.white : t.palette.grey[900],
           borderRadius: 2,
+          maxWidth: "100%",
           p: 1,
         }}
       >

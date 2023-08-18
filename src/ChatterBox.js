@@ -244,6 +244,7 @@ function ChatText({ role, content }) {
           borderRadius: 2,
           maxWidth: "100%",
           p: 1,
+          overflow: "auto",
         }}
       >
         {/* <Typography variant="body2"> */}

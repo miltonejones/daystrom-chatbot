@@ -38,6 +38,7 @@ export default function App() {
   const [sessionPayload, setPayload] = React.useState({});
   const [listOpen, setListOpen] = React.useState(false);
   const [show, setShow] = React.useState(CHATSTATE.IDLE);
+  const [speak, setSpeak] = React.useState(true);
   const [contentText, setContentText] = React.useState(""); // State to save the content of the file
 
   const setChat = (convo) => {
@@ -116,7 +117,7 @@ export default function App() {
 
     setChatMem((c) => [...c, answer]);
 
-    speakText(answer.content);
+    !!speak && speakText(answer.content);
   };
 
   const chatProps = {
@@ -130,6 +131,8 @@ export default function App() {
     show,
     setShow,
     setContentText,
+    speak,
+    setSpeak,
   };
 
   const convos = JSON.parse(localStorage.getItem(COOKIE_NAME) || "{}");

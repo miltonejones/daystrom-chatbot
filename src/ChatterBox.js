@@ -56,12 +56,8 @@ function YourComponent({
           justifyContent: "space-between",
         }}
       >
-        <IconButton
-          sx={{
-            visibility: "hidden",
-          }}
-        >
-          <AttachmentIcon />
+        <IconButton onClick={() => setSpeak(!speak)}>
+          {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
         </IconButton>
         <IconButton onClick={talk}>
           <MicIcon />
@@ -154,8 +150,6 @@ const ChatterBox = ({
   setShow,
   ...props
 }) => {
-  const [speak, setSpeak] = React.useState(true);
-
   const bottom = show & CHATSTATE.VISIBLE ? 10 : -1000;
   const quiet = () => {
     setShow((s) => Number(s) + CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
@@ -166,8 +160,6 @@ const ChatterBox = ({
   const textProps = {
     chatQuestion,
     setChatQuestion,
-    speak,
-    setSpeak,
     talk,
     ...props,
   };

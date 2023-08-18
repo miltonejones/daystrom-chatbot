@@ -152,7 +152,7 @@ const ChatterBox = ({
           transition: "all 0.3s linear",
           right: 10,
           width: "calc(100vw - 20px)",
-          height: "calc(100vh - 80px)",
+          height: "calc(100vh - 180px)",
           overflow: "hidden",
         }}
       >
@@ -164,7 +164,7 @@ const ChatterBox = ({
           <Box
             sx={{
               mb: 1,
-              height: "calc(100vh - 140px)",
+              height: "calc(100vh - 240px)",
               overflow: "scroll",
             }}
           >

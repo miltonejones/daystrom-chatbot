@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VoiceInput from "./VoiceInput";
-
+import ReactMarkdown from "react-markdown";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 
 export const CHATSTATE = {
@@ -64,27 +64,34 @@ function YourComponent({
               onChange={handleFileChange}
             />
             {!!contentText ? (
-              <Stack
+              <Card
                 sx={{
-                  border: (theme) => `solid 1px ${theme.palette.info.light}`,
-                  borderRadius: `0.25rem`,
-                  p: (t) => t.spacing(0, 1),
+                  p: (t) => t.spacing(0.5, 1),
                 }}
               >
-                <Typography
-                  sx={{
-                    whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                  }}
-                  variant="caption"
-                >
-                  <b>{contentText.name.substr(0, 10)}...</b>
-                </Typography>
-                <Typography variant="caption">
-                  {contentText.size} bytes
-                </Typography>
-              </Stack>
+                <Stack>
+                  <Typography
+                    sx={{
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      lineHeight: 1.1,
+                    }}
+                    variant="caption"
+                  >
+                    {contentText.name.substr(0, 16)}...
+                  </Typography>
+                  <Typography
+                    sx={{
+                      lineHeight: 1,
+                      fontSize: "0.6rem",
+                    }}
+                    variant="caption"
+                  >
+                    {contentText.size} bytes
+                  </Typography>
+                </Stack>
+              </Card>
             ) : (
               <IconButton
                 edge="end"
@@ -204,7 +211,9 @@ function ChatText({ role, content }) {
           p: 1,
         }}
       >
-        <Typography variant="body2"> {content}</Typography>
+        {/* <Typography variant="body2"> */}
+        <ReactMarkdown>{content}</ReactMarkdown>
+        {/* </Typography> */}
       </Box>
     </Box>
   );

@@ -28,3 +28,7 @@ li:before {
 li.attach:before {
   content: "📎";
 }
+
+p {
+  margin: 0;
+}

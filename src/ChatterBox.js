@@ -11,7 +11,9 @@ import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VoiceInput from "./VoiceInput";
 import ReactMarkdown from "react-markdown";
+import MicIcon from "@mui/icons-material/Mic";
 import AttachmentIcon from "@mui/icons-material/Attachment";
+import KeyboardIcon from "@mui/icons-material/Keyboard";
 
 export const CHATSTATE = {
   IDLE: 0,
@@ -26,7 +28,9 @@ function YourComponent({
   setChatQuestion,
   speak,
   setSpeak,
+  talk,
 }) {
+  const [mode, setMode] = React.useState("voice");
   const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
@@ -43,6 +47,31 @@ function YourComponent({
       reader.readAsText(file);
     }
   };
+
+  if (mode === "voice") {
+    return (
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
+        <IconButton
+          sx={{
+            visibility: "hidden",
+          }}
+        >
+          <AttachmentIcon />
+        </IconButton>
+        <IconButton onClick={talk}>
+          <MicIcon />
+        </IconButton>
+        <IconButton onClick={() => setMode("text")}>
+          <KeyboardIcon />
+        </IconButton>
+      </Stack>
+    );
+  }
 
   return (
     <TextField
@@ -103,6 +132,9 @@ function YourComponent({
             <IconButton edge="end" onClick={() => setSpeak(!speak)}>
               {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
             </IconButton>
+            <IconButton onClick={() => setMode("voice")}>
+              <MicIcon />
+            </IconButton>
           </>
         ),
       }}
@@ -125,12 +157,18 @@ const ChatterBox = ({
   const [speak, setSpeak] = React.useState(true);
 
   const bottom = show & CHATSTATE.VISIBLE ? 10 : -1000;
+  const quiet = () => {
+    setShow((s) => Number(s) + CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
+  };
+
+  const talk = () => setShow(CHATSTATE.IDLE);
 
   const textProps = {
     chatQuestion,
     setChatQuestion,
     speak,
     setSpeak,
+    talk,
     ...props,
   };
 
@@ -138,11 +176,7 @@ const ChatterBox = ({
     <>
       {show === CHATSTATE.IDLE && (
         <VoiceInput
-          onComplete={() => {
-            setShow(
-              (s) => Number(s) + CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE
-            );
-          }}
+          onComplete={quiet}
           onChat={(q) => {
             // alert(q);
             // setChatQuestion(() => q);

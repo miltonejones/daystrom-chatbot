@@ -11,6 +11,8 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
+import TinyButton from "./styled/TinyButton";
+import { ExpandMore } from "@mui/icons-material";
 
 function TextMenu({ children: text, onChange, onDelete }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -53,10 +55,16 @@ function TextMenu({ children: text, onChange, onDelete }) {
         </Typography>
         <Typography
           variant="body2"
-          sx={{ cursor: "pointer", lineHeight: 1 }}
+          sx={{
+            cursor: "pointer",
+            lineHeight: 1,
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          }}
           onClick={handleOpenMenu}
         >
-          {text}
+          {text} <TinyButton icon={ExpandMore} />
         </Typography>
       </Stack>
 
@@ -74,6 +82,7 @@ function TextMenu({ children: text, onChange, onDelete }) {
           <DialogContentText>Please enter a new name</DialogContentText>
           <TextField
             autoFocus
+            size="small"
             margin="dense"
             label="Name"
             fullWidth
@@ -85,7 +94,7 @@ function TextMenu({ children: text, onChange, onDelete }) {
           <Button onClick={handleModalClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleModalAccept} color="primary">
+          <Button onClick={handleModalAccept} variant="contained">
             Ok
           </Button>
         </DialogActions>

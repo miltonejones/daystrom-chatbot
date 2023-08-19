@@ -6,7 +6,8 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import { Stack, Typography } from "@mui/material";
+import { Divider, Stack, Typography } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 function generateMarks(min, max, step, binary) {
   const marks = [];
@@ -95,9 +96,21 @@ const SettingsPopover = ({
         onClose={handlePopoverClose}
         anchor="bottom"
       >
-        <Stack sx={{ p: 3 }}>
+        <Stack
+          sx={{
+            p: (t) => t.spacing(0, 1, 0, 2),
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          direction="row"
+        >
           <Typography variant="subtitle2">Chatbot settings</Typography>
-          <hr style={{ width: "100%" }} />
+          <IconButton onClick={handlePopoverClose}>
+            <Close />
+          </IconButton>
+        </Stack>
+        <Divider style={{ width: "100%" }} />
+        <Stack sx={{ p: (t) => t.spacing(0, 3, 3, 3) }}>
           <Typography sx={{ mt: 1.5 }} variant="caption">
             Temperature
           </Typography>

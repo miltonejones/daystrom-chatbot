@@ -5,7 +5,7 @@ import Drawer from "@mui/material/Drawer";
 import Alert from "@mui/material/Alert";
 import MicIcon from "@mui/icons-material/Mic";
 import Button from "@mui/material/Button";
-import { IconButton } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 const VoiceInput = ({ onChat, onComplete }) => {
@@ -89,6 +89,16 @@ const VoiceInput = ({ onChat, onComplete }) => {
           >
             {question}
           </Alert>
+          <Typography
+            variant="h5"
+            sx={{
+              textAlign: "center",
+              mt: 6,
+              color: (t) => t.palette.grey[600],
+            }}
+          >
+            Ask any question...
+          </Typography>
           <CircularProgress
             sx={{
               position: "absolute",

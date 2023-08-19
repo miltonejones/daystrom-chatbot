@@ -9,9 +9,10 @@ import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import Stack from "@mui/material/Stack";
 import TextMenu from "./TextMenu";
-import moment from "moment";
 import { Avatar, Box } from "@mui/material";
 import SettingsPopover from "./SettingsPopover";
+import { useS3 } from "./hooks/useS3";
+import { Close } from "@mui/icons-material";
 
 // import { AWS_CONFIG } from "./config";
 
@@ -40,19 +41,26 @@ const defaultProps = {
   tokens: 512,
   temp: 0.4,
   attitude: attitudes[0],
+  mode: "voice",
   speak: true,
 };
 
 export default function App() {
   const [settings, setSettings] = React.useState(defaultProps);
-  const [setLang, setTokens, setTemp, setAttitude, setSpeak] = Object.keys(
+  const [setLang, setTokens, setTemp, setAttitude, setMode] = Object.keys(
     defaultProps
   ).map((key) => (value) => {
     localStorage.setItem(key, value);
     setSettings((s) => ({ ...s, [key]: value }));
   });
 
-  const { lang, tokens, temp, attitude, speak } = settings;
+  const setSpeak = (val) => {
+    localStorage.setItem("speak", val);
+    setSettings((s) => ({ ...s, speak: val }));
+    !val && speechSynthesis.cancel();
+  };
+
+  const { lang, tokens, temp, attitude, speak, mode } = settings;
 
   React.useEffect(() => {
     Object.keys(defaultProps).map((key) => {
@@ -60,12 +68,6 @@ export default function App() {
       !!value && setSettings((s) => ({ ...s, [key]: value }));
     });
   }, []);
-
-  // const [lang, setLang] = React.useState("en-US");
-  // const [tokens, setTokens] = React.useState(512);
-  // const [temp, setTemp] = React.useState(0.4);
-  // const [attitude, setAttitude] = React.useState(attitudes[0]);
-  // const [speak, setSpeak] = React.useState(true);
 
   const [chatQuestion, setChatQuestion] = React.useState();
   const [chatMem, setChatMem] = React.useState([]);
@@ -75,6 +77,13 @@ export default function App() {
   const [listOpen, setListOpen] = React.useState(false);
   const [show, setShow] = React.useState(CHATSTATE.IDLE);
   const [contentText, setContentText] = React.useState("");
+
+  // const { saveChat, files } = useS3();
+
+  const persistChat = (obj) => {
+    localStorage.setItem(COOKIE_NAME, JSON.stringify(obj));
+    // saveChat(obj);
+  };
 
   const setChat = (convo) => {
     setChatMem(convo.mem);
@@ -87,14 +96,14 @@ export default function App() {
   const renameConversation = React.useCallback((id, name) => {
     const pl = JSON.parse(localStorage.getItem(COOKIE_NAME) || "{}");
     pl[id].title = name;
-    localStorage.setItem(COOKIE_NAME, JSON.stringify(pl));
+    persistChat(pl);
     setPayload(pl[id]);
   }, []);
 
   const deleteConversation = React.useCallback((id) => {
     const pl = JSON.parse(localStorage.getItem(COOKIE_NAME) || "{}");
     delete pl[id];
-    localStorage.setItem(COOKIE_NAME, JSON.stringify(pl));
+    persistChat(pl);
 
     // setShow(0);
     setPayload({});
@@ -118,7 +127,7 @@ export default function App() {
           Object.assign(pl, {
             [l.guid]: load,
           });
-          localStorage.setItem(COOKIE_NAME, JSON.stringify(pl));
+          persistChat(pl);
           return load;
         });
         return; // alert('Nothing to see here');
@@ -143,7 +152,7 @@ export default function App() {
         Object.assign(pl, {
           [payload.guid]: payload,
         });
-        localStorage.setItem(COOKIE_NAME, JSON.stringify(pl));
+        persistChat(pl);
         return payload;
       });
 
@@ -152,26 +161,73 @@ export default function App() {
     [sessionID, sessionPayload]
   );
 
+  /**
+   * Handles form submission and generates a response based on the given question.
+   * @async
+   * @param {Event} event - The form submission event.
+   * @param {string} question - The question to generate a response for.
+   */
   const handleSubmit = async (event, question) => {
+    // If an event is provided, prevent the default form submission behavior.
     !!event && event.preventDefault();
 
+    // Create a chat object with the given question or a default question.
     const chat = create(question || chatQuestion);
+
+    // Define a query with system metadata, chat history, and the current chat object.
     const query = [defineSys(contentText, attitude, lang), ...chatMem, chat];
+
+    // Clear the chat question state.
     setChatQuestion("");
 
+    // Add the chat object to the chat history state.
     setChatMem((c) => [...c, chat]);
+
+    // Set the querying state to true.
     setQuerying(true);
 
-    const res = await generateText(query, tokens);
-    const answer = res.choices[0].message;
+    // Generate a response based on the query and tokens.
+    const res = await generateText(query, tokens, temp);
 
+    // Set the querying state to false.
     setQuerying(false);
 
+    // Get the first response choice and its message.
+    const answer = res.choices[0].message;
+
+    // Add a timestamp to the answer and create a logged answer object.
     const loggedAnswer = { ...answer, timestamp: new Date().getTime() };
+
+    // Persist the conversation with the new chat and logged answer objects.
     persistConversation([...chatMem, chat, loggedAnswer], contentText);
+
+    // Add the logged answer object to the chat history state.
     setChatMem((c) => [...c, loggedAnswer]);
+
+    // If speak is truthy, speak the answer content in the specified language.
     !!speak && speakText(answer.content, lang);
   };
+
+  // const handleSubmit = async (event, question) => {
+  //   !!event && event.preventDefault();
+
+  //   const chat = create(question || chatQuestion);
+  //   const query = [defineSys(contentText, attitude, lang), ...chatMem, chat];
+  //   setChatQuestion("");
+
+  //   setChatMem((c) => [...c, chat]);
+  //   setQuerying(true);
+
+  //   const res = await generateText(query, tokens);
+
+  //   setQuerying(false);
+
+  //   const answer = res.choices[0].message;
+  //   const loggedAnswer = { ...answer, timestamp: new Date().getTime() };
+  //   persistConversation([...chatMem, chat, loggedAnswer], contentText);
+  //   setChatMem((c) => [...c, loggedAnswer]);
+  //   !!speak && speakText(answer.content, lang);
+  // };
 
   // const cm = chatMem;
   // const content = await generateText(query, 512, (portions) => {
@@ -183,6 +239,15 @@ export default function App() {
   //   content,
   //   role: "assistant",
   // };
+
+  const createChat = () => {
+    setShow(0);
+    setPayload({});
+    setContentText("");
+    setListOpen(false);
+    setChatMem([]);
+  };
+
   const chatProps = {
     chatMem,
     setChatMem,
@@ -196,6 +261,9 @@ export default function App() {
     setContentText,
     speak,
     setSpeak,
+    createChat,
+    mode,
+    setMode,
   };
 
   const settingsProps = {
@@ -233,17 +301,7 @@ export default function App() {
             direction="row"
             sx={{ alignItems: "center", p: 1 }}
           >
-            {/* <IconButton
-           
-            >
-              <MenuIcon />
-            </IconButton> */}
-
             <Avatar
-              onClick={() => {
-                setListOpen(false);
-                setShow((s) => Number(s) + CHATSTATE.VISIBLE);
-              }}
               sx={{
                 width: 32,
                 height: 32,
@@ -256,7 +314,7 @@ export default function App() {
             <b
               onClick={() => {
                 setListOpen(false);
-                setShow((s) => Number(s) + CHATSTATE.VISIBLE);
+                // setShow((s) => Number(s) + CHATSTATE.VISIBLE);
               }}
               style={{ color: "red " }}
             >
@@ -264,19 +322,17 @@ export default function App() {
             </b>
 
             <Box sx={{ flexGrow: 1 }} />
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => {
-                setShow(0);
-                setPayload({});
-                setContentText("");
-                setListOpen(false);
-                setChatMem([]);
-              }}
-            >
+            <Button variant="outlined" size="small" onClick={createChat}>
               New Chat ➕
             </Button>
+            <IconButton
+              onClick={() => {
+                setListOpen(false);
+                // setShow((s) => Number(s) + CHATSTATE.VISIBLE);
+              }}
+            >
+              <Close />
+            </IconButton>
           </Stack>
           <Typography
             sx={{
@@ -286,6 +342,7 @@ export default function App() {
           >
             History
           </Typography>
+
           <ul>
             {Object.keys(convos).map((key) => (
               <li
@@ -302,11 +359,15 @@ export default function App() {
       </Drawer>
 
       <Stack direction="row" sx={{ alignItems: "center" }} spacing={1}>
-        <Avatar
+        <IconButton
           onClick={() => {
             setListOpen(true);
-            setShow((s) => Number(s) - CHATSTATE.VISIBLE);
+            // setShow((s) => Number(s) - CHATSTATE.VISIBLE);
           }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Avatar
           sx={{
             width: 32,
             height: 32,

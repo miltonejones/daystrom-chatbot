@@ -6,24 +6,33 @@ p {
 
 body {
   font-family: Roboto;
+  background-color: bisque;
 }
 
 li {
   font-family: Roboto;
   font-size: 0.9rem;
 }
+ul {
+  margin: 0;
+  padding: 4px 8px;
+}
 
-ul,
 ul li.normal,
 ul li.attach {
   list-style: none;
-  margin: 0;
-  padding: 4px 8px;
+  margin: 4px 0;
+  padding: 6px 8px;
   cursor: pointer;
+  background-color: bisque;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 li.normal:hover {
-  text-decoration: underline;
+  background-color: rgb(228, 187, 137);
 }
 
 li.attach {
@@ -44,4 +53,11 @@ li.attach:after {
 
 p {
   margin: 0;
+}
+
+pre {
+  background-color: #222;
+  color: #fff;
+  padding: 4px;
+  overflow-x: auto;
 }

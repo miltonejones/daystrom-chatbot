@@ -6,9 +6,11 @@ const create = (q) => ({
 
 export const attitudes = [
   "courteous and professional",
-  "sarcastic and disgruntled",
+  "sarcastic",
   "in rhyme",
+  "street slang",
   "olde english",
+  "like a 40s gangster",
   "dramatic gothic prose",
 ];
 
@@ -76,7 +78,7 @@ const streamResponse = async (response, fn) => {
  * @param {number} temperature - A number between 0 and 1 representing the creativity of the generated text
  * @returns {Promise<Object>} - A Promise that resolves with an object representing the generated text
  */
-const generateText = async (msgs, max_tokens = 128, fn) => {
+const generateText = async (msgs, max_tokens = 128, temperature = 0.9, fn) => {
   const messages = curate(msgs);
   const model = "gpt-3.5-turbo-0301";
   const requestOptions = {
@@ -87,7 +89,7 @@ const generateText = async (msgs, max_tokens = 128, fn) => {
     },
     body: JSON.stringify({
       messages,
-      temperature: 0.9,
+      temperature: Number(temperature),
       model,
       max_tokens: Number(max_tokens),
       stream: !!fn,

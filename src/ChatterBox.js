@@ -15,7 +15,8 @@ import MicIcon from "@mui/icons-material/Mic";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
 import moment from "moment";
-import { Avatar } from "@mui/material";
+import { Avatar, Fab } from "@mui/material";
+import { Mic } from "@mui/icons-material";
 
 export const CHATSTATE = {
   IDLE: 0,
@@ -31,8 +32,9 @@ function YourComponent({
   speak,
   setSpeak,
   talk,
+  mode,
+  setMode,
 }) {
-  const [mode, setMode] = React.useState("voice");
   const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
@@ -157,6 +159,7 @@ const ChatterBox = ({
   handleSubmit,
   show,
   setShow,
+  createChat,
   ...props
 }) => {
   const [offset, setOffset] = React.useState(80);
@@ -203,6 +206,8 @@ const ChatterBox = ({
           sx={{
             p: 1,
           }}
+          elevation={6}
+          variant="elevation"
         >
           {!!querying && <LinearProgress />}
 
@@ -213,15 +218,10 @@ const ChatterBox = ({
               overflow: "scroll",
             }}
           >
+            {!chatMem.length && <EmptyChat onClick={createChat} />}
             {chatMem.map((c, m) => (
               <ChatText key={m} {...c} />
             ))}
-            {/* 
-            <TextField
-              size="small"
-              onChange={(e) => setOffset(Number(e.target.value))}
-              value={offset}
-            /> */}
           </Box>
 
           <form onSubmit={handleSubmit}>
@@ -230,6 +230,33 @@ const ChatterBox = ({
         </Card>
       </div>
     </>
+  );
+};
+
+const EmptyChat = ({ onClick }) => {
+  return (
+    <Stack
+      onClick={onClick}
+      sx={{
+        width: "100%",
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex",
+      }}
+    >
+      Click here to ask any question
+      <Fab
+        color="primary"
+        sx={{
+          width: 94,
+          height: 94,
+          mt: 2,
+        }}
+      >
+        <Mic />
+      </Fab>
+    </Stack>
   );
 };
 
@@ -250,12 +277,11 @@ function ChatText({ role, content, timestamp }) {
         </Avatar>
       )}
       {role === "user" && <TimeStamp time={timestamp} />}
-      <Box
+      <Card
         sx={{
           backgroundColor: (t) =>
-            role === "user" ? t.palette.primary.light : t.palette.grey[200],
-          color: (t) =>
-            role === "user" ? t.palette.common.white : t.palette.grey[900],
+            role === "user" ? `rgb(0, 122, 255)` : `rgb(0, 166, 78)`,
+          color: (t) => t.palette.common.white,
           borderRadius: 2,
           maxWidth: "100%",
           p: 1,
@@ -263,7 +289,7 @@ function ChatText({ role, content, timestamp }) {
         }}
       >
         <ReactMarkdown>{content}</ReactMarkdown>
-      </Box>
+      </Card>
       {role !== "user" && <TimeStamp time={timestamp} />}
       {role === "user" && <Avatar sizes="small">MJ</Avatar>}
     </Box>

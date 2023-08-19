@@ -13,6 +13,8 @@ import { Avatar, Box } from "@mui/material";
 import SettingsPopover from "./SettingsPopover";
 import { useS3 } from "./hooks/useS3";
 import { Close } from "@mui/icons-material";
+import useClipboard from "./hooks/useClipboard";
+import { attachPreclick } from "./util/attachPreclick";
 
 // import { AWS_CONFIG } from "./config";
 
@@ -91,6 +93,7 @@ export default function App() {
     setPayload(convo);
     setListOpen(false);
     setShow(CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
+    setTimeout(attachClicks, 1000);
   };
 
   const renameConversation = React.useCallback((id, name) => {
@@ -175,7 +178,11 @@ export default function App() {
     const chat = create(question || chatQuestion);
 
     // Define a query with system metadata, chat history, and the current chat object.
-    const query = [defineSys(contentText, attitude, lang), ...chatMem, chat];
+    const query = [
+      await defineSys(contentText, attitude, lang),
+      ...chatMem,
+      chat,
+    ];
 
     // Clear the chat question state.
     setChatQuestion("");
@@ -206,39 +213,21 @@ export default function App() {
 
     // If speak is truthy, speak the answer content in the specified language.
     !!speak && speakText(answer.content, lang);
+
+    setTimeout(attachClicks, 1000);
   };
 
-  // const handleSubmit = async (event, question) => {
-  //   !!event && event.preventDefault();
-
-  //   const chat = create(question || chatQuestion);
-  //   const query = [defineSys(contentText, attitude, lang), ...chatMem, chat];
-  //   setChatQuestion("");
-
-  //   setChatMem((c) => [...c, chat]);
-  //   setQuerying(true);
-
-  //   const res = await generateText(query, tokens);
-
-  //   setQuerying(false);
-
-  //   const answer = res.choices[0].message;
-  //   const loggedAnswer = { ...answer, timestamp: new Date().getTime() };
-  //   persistConversation([...chatMem, chat, loggedAnswer], contentText);
-  //   setChatMem((c) => [...c, loggedAnswer]);
-  //   !!speak && speakText(answer.content, lang);
-  // };
-
-  // const cm = chatMem;
-  // const content = await generateText(query, 512, (portions) => {
-  //   console.log({ portions });
-  //   setChatMem([...cm, portions]);
-  // });
-
-  // const answer = {
-  //   content,
-  //   role: "assistant",
-  // };
+  const clipper = useClipboard();
+  const attachClicks = React.useCallback(() => {
+    const handleClick = (event) => {
+      clipper.copy(event.target.innerText);
+      event.target.classList.add("clicked");
+      setTimeout(() => {
+        event.target.classList.remove("clicked");
+      }, 999);
+    };
+    attachPreclick(handleClick);
+  }, [clipper]);
 
   const createChat = () => {
     setShow(0);
@@ -338,6 +327,24 @@ export default function App() {
               <Close />
             </IconButton>
           </Stack>
+
+          {!!sessionPayload.title && (
+            <>
+              <Typography
+                sx={{
+                  ml: 2,
+                }}
+                variant="subtitle2"
+              >
+                Current conversation
+              </Typography>
+
+              <ul>
+                <li className="normal selected">{sessionPayload.title}</li>
+              </ul>
+            </>
+          )}
+
           <Typography
             sx={{
               ml: 2,
@@ -348,16 +355,18 @@ export default function App() {
           </Typography>
 
           <ul>
-            {Object.keys(convos).map((key) => (
-              <li
-                className={!!convos[key].agent ? "attach" : "normal"}
-                onClick={() => {
-                  setChat(convos[key]);
-                }}
-              >
-                {convos[key].title}{" "}
-              </li>
-            ))}
+            {Object.keys(convos)
+              .filter((key) => key !== sessionPayload.guid)
+              .map((key) => (
+                <li
+                  className={!!convos[key].agent ? "attach" : "normal"}
+                  onClick={() => {
+                    setChat(convos[key]);
+                  }}
+                >
+                  {convos[key].title}{" "}
+                </li>
+              ))}
           </ul>
         </Stack>
       </Drawer>

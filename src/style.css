@@ -31,7 +31,8 @@ ul li.attach {
   overflow: hidden;
 }
 
-li.normal:hover {
+li.normal:hover,
+li.normal.selected {
   background-color: rgb(228, 187, 137);
 }
 
@@ -77,4 +78,8 @@ pre::before {
   width: 100%;
   content: "📋 Copy code   ";
   padding: 4px 0;
+}
+
+pre.clicked::before {
+  content: "📋 Copied!   ";
 }

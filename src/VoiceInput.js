@@ -25,6 +25,13 @@ const VoiceInput = ({ onChat, onComplete }) => {
       const recognition = new SpeechRecognition();
       recognitionRef.current = recognition;
 
+      // // Set a timeout of 5 seconds
+      // const timeout = setTimeout(() => {
+      //   recognition.stop();
+      //   onComplete();
+      //   console.log("Speech recognition timed out");
+      // }, 5000);
+
       recognition.onstart = () => {
         setIsListening(true);
       };
@@ -35,6 +42,7 @@ const VoiceInput = ({ onChat, onComplete }) => {
 
       recognition.onresult = (event) => {
         const text = event.results[0][0].transcript;
+        // clearTimeout(timeout);
         onChat(text);
         onComplete();
       };

@@ -1,3 +1,5 @@
+import { getLocation } from "./util/getLocation";
+
 const create = (q) => ({
   timestamp: new Date().getTime(),
   role: "user",
@@ -5,22 +7,34 @@ const create = (q) => ({
 });
 
 export const attitudes = [
-  "courteous and professional",
+  "professional",
   "sarcastic",
   "in rhyme",
+  "in haiku",
+  "in limerick",
   "street slang",
+  "southern slang",
   "olde english",
   "like a 40s gangster",
   "dramatic gothic prose",
 ];
 
-const defineSys = (file, attitude = "sarcastic and disgruntled", lang) => {
+const defineSys = async (
+  file,
+  attitude = "sarcastic and disgruntled",
+  lang
+) => {
+  const place = await getLocation();
   const content = !file?.name
     ? `Your answers should be ${attitude} but accurate and complete. `
     : `refer to this ${file.text}`;
   return {
     role: "system",
-    content: content + ` language setting is ${lang}`,
+    content:
+      content +
+      ` language setting is ${lang}, current location is ${JSON.stringify(
+        place
+      )}. current time is ${new Date().toString()}`,
     timestamp: new Date().getTime(),
   };
 };

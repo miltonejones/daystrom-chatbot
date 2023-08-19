@@ -17,6 +17,7 @@ import KeyboardIcon from "@mui/icons-material/Keyboard";
 import moment from "moment";
 import { Avatar, Fab } from "@mui/material";
 import { Mic } from "@mui/icons-material";
+import useClipboard from "./hooks/useClipboard";
 
 export const CHATSTATE = {
   IDLE: 0,
@@ -167,7 +168,7 @@ const ChatterBox = ({
   const bottom =
     show & CHATSTATE.VISIBLE || show === CHATSTATE.IDLE ? 10 : -1000;
   const quiet = () => {
-    setShow((s) => Number(s) + CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
+    setShow((s) => CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
   };
 
   const talk = () => setShow(CHATSTATE.IDLE);
@@ -262,6 +263,7 @@ const EmptyChat = ({ onClick }) => {
 };
 
 function ChatText({ role, content, timestamp }) {
+  const { copy, copied } = useClipboard();
   return (
     <Box
       sx={{
@@ -291,8 +293,12 @@ function ChatText({ role, content, timestamp }) {
       >
         <ReactMarkdown>{content}</ReactMarkdown>
         {role !== "user" && (
-          <Typography sx={{ pt: 2 }} variant="caption">
-            📋 Copy
+          <Typography
+            sx={{ pt: 2, cursor: "pointer" }}
+            onClick={() => copy(content)}
+            variant="caption"
+          >
+            📋 {copied ? "Copied!" : "Copy"}
           </Typography>
         )}
       </Card>

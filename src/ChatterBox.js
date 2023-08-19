@@ -164,7 +164,8 @@ const ChatterBox = ({
 }) => {
   const [offset, setOffset] = React.useState(80);
 
-  const bottom = show & CHATSTATE.VISIBLE ? 10 : -1000;
+  const bottom =
+    show & CHATSTATE.VISIBLE || show === CHATSTATE.IDLE ? 10 : -1000;
   const quiet = () => {
     setShow((s) => Number(s) + CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
   };

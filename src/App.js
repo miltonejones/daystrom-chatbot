@@ -379,7 +379,7 @@ export default function App() {
           src="./Chat.png"
           alt="logo"
         />
-        {JSON.stringify(show)}
+        {/* {JSON.stringify(show)} */}
         <TextMenu
           onChange={(name) => renameConversation(sessionPayload.guid, name)}
           onDelete={() => deleteConversation(sessionPayload.guid)}

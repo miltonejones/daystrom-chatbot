@@ -14,6 +14,8 @@ import ReactMarkdown from "react-markdown";
 import MicIcon from "@mui/icons-material/Mic";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
+import moment from "moment";
+import { Avatar } from "@mui/material";
 
 export const CHATSTATE = {
   IDLE: 0,
@@ -59,9 +61,15 @@ function YourComponent({
         <IconButton onClick={() => setSpeak(!speak)}>
           {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
         </IconButton>
-        <IconButton onClick={talk}>
+        <IconButton
+          sx={{
+            color: "blue",
+          }}
+          onClick={talk}
+        >
           <MicIcon />
         </IconButton>
+
         <IconButton onClick={() => setMode("text")}>
           <KeyboardIcon />
         </IconButton>
@@ -125,6 +133,7 @@ function YourComponent({
                 <AttachmentIcon />
               </IconButton>
             )}
+
             <IconButton edge="end" onClick={() => setSpeak(!speak)}>
               {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
             </IconButton>
@@ -150,7 +159,7 @@ const ChatterBox = ({
   setShow,
   ...props
 }) => {
-  const [offset, setOffset] = React.useState(200);
+  const [offset, setOffset] = React.useState(80);
 
   const bottom = show & CHATSTATE.VISIBLE ? 10 : -1000;
   const quiet = () => {
@@ -181,14 +190,11 @@ const ChatterBox = ({
 
       <div
         style={{
-          zIndex: 2000,
           position: "fixed",
           bottom,
           transition: "all 0.3s linear",
           right: 10,
           width: "calc(100vw - 20px)",
-          outline: "dotted 1px green",
-          outlineOffset: 1,
           height: `calc(100vh - ${offset}px)`,
           overflow: "hidden",
         }}
@@ -198,11 +204,11 @@ const ChatterBox = ({
             p: 1,
           }}
         >
+          {!!querying && <LinearProgress />}
+
           <Box
             sx={{
               mb: 1,
-              outline: "dotted 1px purple",
-              outlineOffset: 2,
               height: `calc(100vh - ${offset + 60}px)`,
               overflow: "scroll",
             }}
@@ -210,15 +216,13 @@ const ChatterBox = ({
             {chatMem.map((c, m) => (
               <ChatText key={m} {...c} />
             ))}
-
+            {/* 
             <TextField
               size="small"
               onChange={(e) => setOffset(Number(e.target.value))}
               value={offset}
-            />
+            /> */}
           </Box>
-
-          {!!querying && <LinearProgress />}
 
           <form onSubmit={handleSubmit}>
             <YourComponent {...textProps} />
@@ -229,16 +233,23 @@ const ChatterBox = ({
   );
 };
 
-function ChatText({ role, content }) {
+function ChatText({ role, content, timestamp }) {
   return (
     <Box
       sx={{
+        gap: 1,
         display: "flex",
         m: 1,
         flexDirection: "row",
         justifyContent: role === "user" ? "flex-end" : "flex-start",
       }}
     >
+      {role !== "user" && (
+        <Avatar src="./Chat.png" alt="id" sizes="small">
+          MJ
+        </Avatar>
+      )}
+      {role === "user" && <TimeStamp time={timestamp} />}
       <Box
         sx={{
           backgroundColor: (t) =>
@@ -251,12 +262,38 @@ function ChatText({ role, content }) {
           overflow: "auto",
         }}
       >
-        {/* <Typography variant="body2"> */}
         <ReactMarkdown>{content}</ReactMarkdown>
-        {/* </Typography> */}
       </Box>
+      {role !== "user" && <TimeStamp time={timestamp} />}
+      {role === "user" && <Avatar sizes="small">MJ</Avatar>}
     </Box>
   );
+}
+
+function TimeStamp({ time }) {
+  if (isNaN(time)) return <i />;
+  return (
+    <Typography
+      sx={{
+        whiteSpace: "nowrap",
+        color: (t) => t.palette.grey[500],
+      }}
+      variant="caption"
+    >
+      {formatTime(time)}
+    </Typography>
+  );
+}
+
+function formatTime(ms) {
+  const timestamp = moment(ms);
+
+  // Check if the timestamp is from today
+  if (moment().isSame(timestamp, "day")) {
+    return timestamp.format("hh:mm a");
+  } else {
+    return timestamp.format("ddd hh:mm a");
+  }
 }
 
 export default ChatterBox;

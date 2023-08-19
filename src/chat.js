@@ -1,28 +1,71 @@
-const create = (q) => ({ role: "user", content: q });
+const create = (q) => ({
+  timestamp: new Date().getTime(),
+  role: "user",
+  content: q,
+});
 
-const defineSys = (file) => {
+export const attitudes = [
+  "courteous and professional",
+  "sarcastic and disgruntled",
+  "in rhyme",
+  "olde english",
+  "dramatic gothic prose",
+];
+
+const defineSys = (file, attitude = "sarcastic and disgruntled", lang) => {
   const content = !file?.name
-    ? ` You are a voice assistant. your answers should be friendly and polite `
+    ? `Your answers should be ${attitude} but accurate and complete. `
     : `refer to this ${file.text}`;
   return {
     role: "system",
-    // key,
-    content,
+    content: content + ` language setting is ${lang}`,
+    timestamp: new Date().getTime(),
   };
 };
 
-const ask = (question, json, memory = []) => {
-  const query = [
-    {
-      role: "system",
-      content: `
-    You are a voice assistant. your answers should be friendly and polite
-    `,
-    },
-    ...memory,
-    create(question),
-  ];
-  return query;
+const curate = (chatlog) =>
+  chatlog.map((log) => {
+    const { timestamp, ...rest } = log;
+    return rest;
+  });
+
+const streamResponse = async (response, fn) => {
+  // Read the response as a stream of data
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let innerText = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+    // Massage and parse the chunk of data
+    const chunk = decoder.decode(value);
+    const lines = chunk.split("\n");
+    // console.log({
+    //   lines,
+    // });
+    const filteredLines = lines
+      .map((line) => line.replace(/data: /, "").trim()) // Remove the "data: " prefix
+      .filter((line) => line !== "" && line !== "[DONE]"); // Remove empty lines and "[DONE]"
+    // console.log({ filteredLines });
+    const parsedLines = filteredLines.map((line) => JSON.parse(line)); // Parse the JSON string
+
+    for (const parsedLine of parsedLines) {
+      const { choices } = parsedLine;
+      const { delta } = choices[0];
+      const { content } = delta;
+      // Update the UI with the new content
+      if (content) {
+        innerText += content;
+        fn && fn(innerText);
+        console.log({ innerText });
+      }
+    }
+  }
+
+  return innerText;
 };
 
 /**
@@ -33,7 +76,8 @@ const ask = (question, json, memory = []) => {
  * @param {number} temperature - A number between 0 and 1 representing the creativity of the generated text
  * @returns {Promise<Object>} - A Promise that resolves with an object representing the generated text
  */
-const generateText = async (messages, max_tokens = 128) => {
+const generateText = async (msgs, max_tokens = 128, fn) => {
+  const messages = curate(msgs);
   const model = "gpt-3.5-turbo-0301";
   const requestOptions = {
     method: "POST",
@@ -45,7 +89,8 @@ const generateText = async (messages, max_tokens = 128) => {
       messages,
       temperature: 0.9,
       model,
-      max_tokens,
+      max_tokens: Number(max_tokens),
+      stream: !!fn,
     }),
   };
 
@@ -61,8 +106,13 @@ const generateText = async (messages, max_tokens = 128) => {
     "https://api.openai.com/v1/chat/completions",
     requestOptions
   );
-  const json = await response.json();
+
+  if (!fn) {
+    const json = await response.json();
+    return json;
+  }
+  const json = streamResponse(response, fn);
   return json;
 };
 
-export { ask, generateText, create, defineSys };
+export { generateText, create, defineSys };

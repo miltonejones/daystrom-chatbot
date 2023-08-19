@@ -266,7 +266,7 @@ function ChatText({ role, content, timestamp }) {
       sx={{
         gap: 1,
         display: "flex",
-        m: 1,
+        m: 2,
         flexDirection: "row",
         justifyContent: role === "user" ? "flex-end" : "flex-start",
       }}
@@ -289,6 +289,11 @@ function ChatText({ role, content, timestamp }) {
         }}
       >
         <ReactMarkdown>{content}</ReactMarkdown>
+        {role !== "user" && (
+          <Typography sx={{ pt: 2 }} variant="caption">
+            📋 Copy
+          </Typography>
+        )}
       </Card>
       {role !== "user" && <TimeStamp time={timestamp} />}
       {role === "user" && <Avatar sizes="small">MJ</Avatar>}

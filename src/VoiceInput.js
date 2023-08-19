@@ -48,7 +48,6 @@ const VoiceInput = ({ onChat, onComplete }) => {
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
-        // onComplete();
       }
     };
   }, [onChat]);

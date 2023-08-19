@@ -287,7 +287,7 @@ export default function App() {
         anchor="left"
         onClose={() => {
           setListOpen(false);
-          setShow((s) => Number(s) + CHATSTATE.VISIBLE);
+          setShow(() => CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
         }}
       >
         <Stack
@@ -314,21 +314,25 @@ export default function App() {
             <b
               onClick={() => {
                 setListOpen(false);
-                // setShow((s) => Number(s) + CHATSTATE.VISIBLE);
               }}
               style={{ color: "red " }}
             >
-              <u>Daystrom Chatbot</u>
+              <u>Daystrom</u>
             </b>
 
             <Box sx={{ flexGrow: 1 }} />
-            <Button variant="outlined" size="small" onClick={createChat}>
-              New Chat ➕
+
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={createChat}
+              endIcon={<>➕</>}
+            >
+              New Chat
             </Button>
             <IconButton
               onClick={() => {
                 setListOpen(false);
-                // setShow((s) => Number(s) + CHATSTATE.VISIBLE);
               }}
             >
               <Close />
@@ -362,7 +366,6 @@ export default function App() {
         <IconButton
           onClick={() => {
             setListOpen(true);
-            // setShow((s) => Number(s) - CHATSTATE.VISIBLE);
           }}
         >
           <MenuIcon />
@@ -376,7 +379,7 @@ export default function App() {
           src="./Chat.png"
           alt="logo"
         />
-
+        {JSON.stringify(show)}
         <TextMenu
           onChange={(name) => renameConversation(sessionPayload.guid, name)}
           onDelete={() => deleteConversation(sessionPayload.guid)}

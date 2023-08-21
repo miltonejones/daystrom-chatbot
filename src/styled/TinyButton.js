@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material";
 
 const TinyButton = ({ icon: Icon, ...props }) => {
   return (
-    <IconButton {...props} sx={{ width: 18, height: 18 }}>
+    <IconButton {...props} sx={{ width: 18, height: 18, color: "inherit" }}>
       <Icon sx={{ width: 16, height: 16 }} />
     </IconButton>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 import "./style.css";
-import { attitudes } from "./chat";
+import { attitudes, composure } from "./chat";
 import ChatterBox from "./ChatterBox";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -201,7 +201,8 @@ export default function App() {
           )}
         </TextMenu>
         <Box sx={{ flexGrow: 1 }} />
-        <SettingsPopover items={attitudes} {...settingsProps} />
+        {/* {JSON.stringify(chatbot.state.value)} */}
+        <SettingsPopover items={composure} {...settingsProps} />
       </Stack>
       <ChatterBox {...chatProps} />
     </div>

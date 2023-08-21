@@ -15,10 +15,11 @@ import MicIcon from "@mui/icons-material/Mic";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
 import moment from "moment";
 import { Avatar, Collapse, Fab, styled } from "@mui/material";
-import { Mic } from "@mui/icons-material";
+import { CopyAll, Mic, Sync } from "@mui/icons-material";
 import useClipboard from "./hooks/useClipboard";
 import AttachmentButton from "./styled/AttachmentButton";
 import { keyframes } from "@emotion/react";
+import TinyButton from "./styled/TinyButton";
 
 // Define the keyframes for the pulsate animation
 const pulsate = keyframes`
@@ -250,7 +251,17 @@ const ChatterBox = ({
               <EmptyChat chatbot={chatbot} onClick={createChat} />
             )}
             {chatbot.chatmem.map((c, m) => (
-              <ChatText key={m} {...c} />
+              <ChatText
+                key={m}
+                index={m}
+                {...c}
+                retry={(index) =>
+                  chatbot.send({
+                    type: "retry",
+                    index,
+                  })
+                }
+              />
             ))}
             {!!chatbot.streamText && (
               <ChatText
@@ -315,7 +326,7 @@ const EmptyChat = ({ onClick, chatbot }) => {
   );
 };
 
-function ChatText({ role, content, timestamp }) {
+function ChatText({ retry, role, content, index, timestamp }) {
   const { copy, copied } = useClipboard();
   return (
     <Box
@@ -345,14 +356,25 @@ function ChatText({ role, content, timestamp }) {
         }}
       >
         <ReactMarkdown>{content}</ReactMarkdown>
-        {role !== "user" && (
-          <Typography
-            sx={{ pt: 2, cursor: "pointer" }}
-            onClick={() => copy(content)}
-            variant="caption"
-          >
-            📋 {copied ? "Copied!" : "Copy"}
-          </Typography>
+        {role !== "user" && !!index && (
+          <>
+            <Typography
+              sx={{ pt: 2, cursor: "pointer" }}
+              onClick={() => copy(content)}
+              variant="caption"
+            >
+              <TinyButton icon={CopyAll} />
+              {copied ? "Copied!" : "Copy"}
+            </Typography>
+            <Typography
+              sx={{ pt: 2, cursor: "pointer" }}
+              onClick={() => retry(index)}
+              variant="caption"
+            >
+              <TinyButton icon={Sync} />
+              Retry
+            </Typography>
+          </>
         )}
       </Card>
       {role !== "user" && <TimeStamp time={timestamp} />}

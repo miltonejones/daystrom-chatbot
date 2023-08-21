@@ -160,8 +160,8 @@ const SettingsPopover = ({
             displayEmpty
             fullWidth
           >
-            {items.map((item, index) => (
-              <MenuItem key={index} value={item}>
+            {Object.keys(items).map((item, index) => (
+              <MenuItem key={index} value={items[item]}>
                 {item}
               </MenuItem>
             ))}

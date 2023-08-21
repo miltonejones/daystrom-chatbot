@@ -6,19 +6,21 @@ const create = (q) => ({
   content: q,
 });
 
-export const attitudes = [
-  "professional",
-  "sarcastic",
-  "in rhyme",
-  "in haiku",
-  "in limerick",
-  "street slang",
-  "southern slang",
-  "olde english",
-  "like a 40s gangster",
-  "dramatic gothic prose",
-  "valley girl",
-];
+export const composure = {
+  professional: "professional",
+  sarcastic: "sarcastic",
+  rhyme: "in rhyme",
+  haiku: "in haiku",
+  limerick: "in limerick",
+  street: "street slang",
+  southern: "southern slang",
+  olde: "olde english",
+  gangster: "like a 40s gangster",
+  gothic: "dramatic gothic prose",
+  valley: "valley girl",
+};
+
+export const attitudes = Object.values(composure);
 
 const defineSys = (
   file,
@@ -77,7 +79,7 @@ const streamResponse = async (response, fn) => {
       if (content) {
         innerText += content;
         fn && fn(innerText);
-        console.log({ innerText });
+        // console.log({ innerText });
       }
     }
   }

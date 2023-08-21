@@ -59,13 +59,20 @@ const machine = createMachine(
               id: "invoke-wnwh6",
             },
             on: {
-              done: {
-                target: "#Daystrom chatbot.pause for effect",
-                actions: {
-                  type: "assignPrompt",
-                  params: {},
+              done: [
+                {
+                  target: "#Daystrom chatbot.pause for effect",
+                  cond: "text was detected",
+                  actions: {
+                    type: "assignPrompt",
+                    params: {},
+                  },
                 },
-              },
+                {
+                  target: "#Daystrom chatbot.waiting for input",
+                  description: "No question was heard",
+                },
+              ],
               "user talking": {
                 actions: {
                   type: "assignTranscript",
@@ -231,6 +238,14 @@ const machine = createMachine(
             },
             internal: true,
           },
+          retry: {
+            target: "Process chat prompt",
+            actions: {
+              type: "resetPayload",
+              params: {},
+            },
+            description: "Ask the previous question again",
+          },
         },
       },
 
@@ -343,9 +358,28 @@ const machine = createMachine(
   },
   {
     actions: {
-      assignUserData: assign((_, event) => ({
-        userData: event.data,
-      })),
+      assignUserData: assign((_, event) => {
+        const props = Object.keys(defaultProps).reduce((out, key) => {
+          const value = localStorage.getItem(key);
+          if (value) out[key] = value;
+          return out;
+        }, {});
+
+        return {
+          userData: event.data,
+          ...props,
+        };
+      }),
+      resetPayload: assign((context, event) => {
+        const chatmem = context.chatmem.slice(0, event.index);
+        console.log({ chatmem });
+        // chatmem.pop();
+        const question = chatmem.pop();
+        return {
+          chatmem,
+          prompt: question.content,
+        };
+      }),
 
       assignAsstTitle: assign(() => ({
         transcript: "",
@@ -459,8 +493,9 @@ const machine = createMachine(
       }),
     },
     guards: {
-      "payload has title": (context, event) => !!context.payload.title,
-      "use silent response": (context, event) => !context.speak,
+      "payload has title": (context) => !!context.payload.title,
+      "use silent response": (context) => !context.speak,
+      "text was detected": (context) => !!context.transcript?.length,
     },
     delays: {},
   }
@@ -582,10 +617,12 @@ export const useChatMachine = () => {
   recognition.interimResults = true;
 
   recognition.onerror = (event) => {
+    // alert("timeout");
     send("timeout");
   };
 
   recognition.onend = (event) => {
+    // alert("done");
     send("done");
   };
 
@@ -604,13 +641,6 @@ export const useChatMachine = () => {
     localStorage.setItem(key, value);
     setState(key, value);
   });
-
-  React.useEffect(() => {
-    Object.keys(defaultProps).map((key) => {
-      const value = localStorage.getItem(key);
-      !!value && setState(key, value);
-    });
-  }, []);
 
   const setSpeak = (val) => {
     localStorage.setItem("speak", val);
@@ -701,6 +731,14 @@ function announceText(speechText, lang) {
     console.error("Speech synthesis is not supported in this browser.");
   }
 }
+
+function removeBetweenBackticks(str) {
+  return str.replace(/```.*?```/gs, "");
+}
+
+// Test
+let s = "Hello ```This is inside backticks``` World!";
+console.log(removeBetweenBackticks(s));
 
 const sarcasticQuestions = [
   "What do you want, genius?",

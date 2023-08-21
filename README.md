@@ -1,70 +1,69 @@
-# Getting Started with Create React App
+# Chatbot with React and XState
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project implements a conversational chatbot using React and the XState state machine library.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Voice and text chatbot modes 
+- Speech recognition and synthesis for voice mode
+- GPT-3 integration to generate responses
+- Persistent conversation history/context
+- Clipboard copy for chat extracts
+- Customizable settings - language, temperature, tokens etc.
 
-### `npm start`
+## Architecture
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The bot is built using a state machine architecture with XState. The different states like `Waiting for Input`, `Processing Prompt`, `Speaking Response` etc are defined with allowed transitions.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+React hooks like `useMachine` and `useEffect` integrate the state machine with React components. 
 
-### `npm test`
+Services contain the business logic for each state transition. For example, the `Process Prompt` state calls the `GPT-3 API` service to generate the next response.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+State context stores conversation data like the chat history, settings and current prompt.
 
-### `npm run build`
+Helper methods allow controlling and updating the context from external components.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Node.js and npm
+- GPT-3 API key
 
-### `npm run eject`
+### Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Clone the repo
+- Run `npm install`
+- Add your GPT-3 key to `.env`
+- Run `npm start`
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The chatbot supports both voice and text modes. 
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+In voice mode, pressing the mic button starts speech recognition. Speaking a query sends it to GPT-3 to generate a response. 
 
-## Learn More
+In text mode, you can type queries and get responses.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Conversations are persisted across sessions. You can give titles to conversations to navigate between them.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The settings sidebar allows customizing options like temperature, voice etc.
 
-### Code Splitting
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Pull requests are welcome! Here are some ideas for improvements:
 
-### Analyzing the Bundle Size
+- Add more NLP features like sentiment analysis 
+- Improve state management for complex conversations
+- Modularize code into separate components 
+- Better error handling
+- Visual chat UI improvements
+- Accessibility improvements
+- Testing - unit and integration 
+- Performance optimizations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## License
 
-### Making a Progressive Web App
+This project is licensed under the MIT license. See [LICENSE](LICENSE) for more details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Let me know if you would like any clarification or have additional suggestions for the README!

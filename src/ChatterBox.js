@@ -18,6 +18,23 @@ import { Avatar, Collapse, Fab, styled } from "@mui/material";
 import { Mic } from "@mui/icons-material";
 import useClipboard from "./hooks/useClipboard";
 import AttachmentButton from "./styled/AttachmentButton";
+import { keyframes } from "@emotion/react";
+
+// Define the keyframes for the pulsate animation
+const pulsate = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+`;
 
 const HomepageTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
@@ -257,7 +274,9 @@ const EmptyChat = ({ onClick, chatbot }) => {
       }}
     >
       <Typography>
-        {ready2Chat ? "Click here to ask any question" : "Loading..."}
+        {ready2Chat
+          ? "Click here to ask any question."
+          : "Ask your question when ready..."}
       </Typography>
       <Fab
         onClick={onClick}
@@ -271,6 +290,16 @@ const EmptyChat = ({ onClick, chatbot }) => {
       >
         <Mic />
       </Fab>
+      <Typography
+        variant="caption"
+        sx={{
+          mt: 2,
+          color: (t) => t.palette.grey[600],
+        }}
+      >
+        ChatGPT may produce inaccurate information about people, places, or
+        facts.
+      </Typography>
     </Stack>
   );
 };

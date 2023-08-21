@@ -5,8 +5,13 @@ p {
 }
 
 body {
+  --body-background: #efede6;
+  --dark-background: #ded5c7;
+}
+
+body {
   font-family: Roboto;
-  background-color: bisque;
+  background-color: var(--body-background);
 }
 
 li {
@@ -24,7 +29,7 @@ ul li.attach {
   margin: 4px 0;
   padding: 6px 8px;
   cursor: pointer;
-  background-color: bisque;
+  background-color: var(--body-background);
   border-radius: 0.25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -33,7 +38,7 @@ ul li.attach {
 
 li.normal:hover,
 li.normal.selected {
-  background-color: rgb(228, 187, 137);
+  background-color: var(--dark-background);
 }
 
 li.attach {

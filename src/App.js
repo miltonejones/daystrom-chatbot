@@ -210,8 +210,10 @@ export default function App() {
         />
 
         <TextMenu
+          active={!!sessionPayload.title}
           onChange={(name) => renameConversation(sessionPayload.guid, name)}
           onDelete={() => deleteConversation(sessionPayload.guid)}
+          onCreate={createChat}
         >
           {sessionPayload.title || (
             <>

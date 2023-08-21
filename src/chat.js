@@ -17,6 +17,7 @@ export const attitudes = [
   "olde english",
   "like a 40s gangster",
   "dramatic gothic prose",
+  "valley girl",
 ];
 
 const defineSys = (

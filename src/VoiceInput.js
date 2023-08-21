@@ -5,8 +5,9 @@ import Drawer from "@mui/material/Drawer";
 import Alert from "@mui/material/Alert";
 import MicIcon from "@mui/icons-material/Mic";
 import Button from "@mui/material/Button";
-import { IconButton, Typography } from "@mui/material";
+import { Fab, IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { pulsate } from "./util/pulsate";
 
 const VoiceInput = ({ chatbot, onComplete }) => {
   const [isListening, setIsListening] = useState(true);
@@ -103,25 +104,28 @@ const VoiceInput = ({ chatbot, onComplete }) => {
               color: (t) => t.palette.grey[600],
             }}
           >
-            Ask any question...
+            What can I help you with?
           </Typography>
-          <CircularProgress
+          <Box
             sx={{
-              position: "absolute",
-              top: "calc(50% - 36px)",
-              left: "calc(50vw - 36px)",
-              transform: "translate(-50%, -50%)",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              p: 2,
             }}
-            size={72}
-          />
-          <MicIcon
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50vw",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
+          >
+            <Fab
+              color="primary"
+              sx={{
+                width: 72,
+                height: 72,
+                transform: "translate(-50%, -50%)",
+                animation: `${pulsate} 1.5s infinite`, // Apply animation when not ready to chat
+              }}
+            >
+              <MicIcon />
+            </Fab>
+          </Box>
         </Box>
       )}
     </Drawer>

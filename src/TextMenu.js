@@ -7,6 +7,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   TextField,
   Typography,
   Stack,
@@ -17,6 +18,7 @@ import { ExpandMore } from "@mui/icons-material";
 function TextMenu({ children: text, onChange, onDelete }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [tempName, setTempName] = useState(text);
 
   const handleOpenMenu = (event) => {
@@ -43,9 +45,23 @@ function TextMenu({ children: text, onChange, onDelete }) {
   };
 
   const handleDeleteClick = () => {
-    onDelete();
+    setOpenConfirm(true);
     handleCloseMenu();
   };
+
+  const handleConfirmClose = () => {
+    setOpenConfirm(false);
+  };
+
+  const handleConfirmDelete = () => {
+    onDelete();
+    setOpenConfirm(false);
+  };
+
+  // const handleDeleteClick = () => {
+  //   onDelete();
+  //   handleCloseMenu();
+  // };
 
   return (
     <div>
@@ -96,6 +112,21 @@ function TextMenu({ children: text, onChange, onDelete }) {
           </Button>
           <Button onClick={handleModalAccept} variant="contained">
             Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openConfirm} onClose={handleConfirmClose}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmClose}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} color="error">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

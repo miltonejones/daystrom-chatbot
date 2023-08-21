@@ -12,168 +12,184 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VoiceInput from "./VoiceInput";
 import ReactMarkdown from "react-markdown";
 import MicIcon from "@mui/icons-material/Mic";
-import AttachmentIcon from "@mui/icons-material/Attachment";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
 import moment from "moment";
-import { Avatar, Fab } from "@mui/material";
+import { Avatar, Collapse, Fab, styled } from "@mui/material";
 import { Mic } from "@mui/icons-material";
 import useClipboard from "./hooks/useClipboard";
+import AttachmentButton from "./styled/AttachmentButton";
 
+const HomepageTextField = styled(TextField)(() => ({
+  "& .MuiInputBase-root": {
+    borderRadius: 30,
+    backgroundColor: "#fff",
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: "none",
+  },
+  "& .MuiInputAdornment-positionEnd": {
+    marginRight: 8,
+  },
+  "& .MuiInputAdornment-root": {
+    color: "rgba(0, 0, 0, 0.54)",
+  },
+}));
 export const CHATSTATE = {
   IDLE: 0,
   INITIALIZED: 1,
   VISIBLE: 2,
 };
 
-function YourComponent({
-  contentText,
-  setContentText,
+function ChatInput({
+  chatbot,
   chatQuestion,
   setChatQuestion,
-  speak,
+
   setSpeak,
   talk,
   mode,
   setMode,
 }) {
-  const fileInputRef = useRef(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.size <= 3072) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setContentText({
-          name: file.name,
-          size: file.size,
-          text: e.target.result,
-        });
-      };
-      reader.readAsText(file);
-    }
-  };
-
-  if (mode === "voice") {
-    return (
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: "space-between",
-        }}
-      >
-        <IconButton onClick={() => setSpeak(!speak)}>
-          {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
-        </IconButton>
-        <IconButton
-          sx={{
-            color: "blue",
-          }}
-          onClick={talk}
-        >
-          <MicIcon />
-        </IconButton>
-
-        <IconButton onClick={() => setMode("text")}>
-          <KeyboardIcon />
-        </IconButton>
-      </Stack>
-    );
-  }
+  const { contentText, speak } = chatbot.state.context;
 
   return (
-    <TextField
-      autoComplete="off"
-      fullWidth
-      onChange={(e) => setChatQuestion(e.target.value)}
-      value={chatQuestion}
-      sx={{ minWidth: 360 }}
-      size="small"
-      placeholder="Ask me anything"
-      InputProps={{
-        endAdornment: (
-          <>
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              accept=".txt, .json, .js, .py" // Updated this line
-              onChange={handleFileChange}
-            />
-            {!!contentText ? (
-              <Card
-                sx={{
-                  p: (t) => t.spacing(0.5, 1),
-                }}
-              >
-                <Stack>
-                  <Typography
-                    sx={{
-                      whiteSpace: "nowrap",
-                      textOverflow: "ellipsis",
-                      overflow: "hidden",
-                      lineHeight: 1.1,
-                    }}
-                    variant="caption"
-                  >
-                    {contentText.name.substr(0, 16)}...
-                  </Typography>
-                  <Typography
-                    sx={{
-                      lineHeight: 1,
-                      fontSize: "0.6rem",
-                    }}
-                    variant="caption"
-                  >
-                    {contentText.size} bytes
-                  </Typography>
-                </Stack>
-              </Card>
-            ) : (
-              <IconButton
-                edge="end"
-                onClick={() => fileInputRef.current.click()}
-              >
-                <AttachmentIcon />
-              </IconButton>
-            )}
-
-            <IconButton edge="end" onClick={() => setSpeak(!speak)}>
-              {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
-            </IconButton>
-            <IconButton onClick={() => setMode("voice")}>
-              <MicIcon />
-            </IconButton>
-          </>
-        ),
+    <Stack
+      direction="row"
+      sx={{
+        alignItems: "center",
       }}
-    />
+    >
+      <Collapse orientation="horizontal" in={mode !== "voice"}>
+        <Box
+          sx={{
+            width: "calc(100vw - 2rem)",
+          }}
+        >
+          <HomepageTextField
+            autoComplete="off"
+            fullWidth
+            onChange={(e) => setChatQuestion(e.target.value)}
+            value={chatQuestion}
+            sx={{ minWidth: 360 }}
+            size="small"
+            placeholder="Ask me anything"
+            InputProps={{
+              endAdornment: (
+                <>
+                  {!!contentText ? (
+                    <Card
+                      sx={{
+                        p: (t) => t.spacing(0.5, 1),
+                      }}
+                    >
+                      <Stack>
+                        <Typography
+                          sx={{
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
+                            lineHeight: 1.1,
+                          }}
+                          variant="caption"
+                        >
+                          {contentText.name.substr(0, 16)}...
+                        </Typography>
+                        <Typography
+                          sx={{
+                            lineHeight: 1,
+                            fontSize: "0.6rem",
+                          }}
+                          variant="caption"
+                        >
+                          {contentText.size} bytes
+                        </Typography>
+                      </Stack>
+                    </Card>
+                  ) : (
+                    <AttachmentButton
+                      edge="end"
+                      fileLoaded={(object) =>
+                        chatbot.setState("contentText", object)
+                      }
+                    />
+                  )}
+
+                  <IconButton edge="end" onClick={() => setSpeak(!speak)}>
+                    {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                  </IconButton>
+                  <IconButton edge="end" onClick={() => setMode("voice")}>
+                    <MicIcon />
+                  </IconButton>
+                </>
+              ),
+            }}
+          />
+        </Box>
+      </Collapse>
+
+      <Collapse
+        sx={{
+          width: "100vw",
+        }}
+        orientation="horizontal"
+        in={mode === "voice"}
+      >
+        <Stack
+          direction="row"
+          sx={{
+            width: "calc(100vw - 2rem)",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* <AttachmentButton
+            edge="end"
+            fileLoaded={(object) => chatbot.setState("contentText", object)}
+          /> */}
+          <IconButton onClick={() => setSpeak(!speak)}>
+            {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
+          </IconButton>
+          <IconButton
+            sx={{
+              color: "blue",
+            }}
+            onClick={talk}
+          >
+            <MicIcon />
+          </IconButton>
+
+          <IconButton onClick={() => setMode("text")}>
+            <KeyboardIcon />
+          </IconButton>
+        </Stack>
+      </Collapse>
+    </Stack>
   );
 }
 
 const ChatterBox = ({
-  chatMem,
-  // setRefresh,
-  querying,
+  chatbot,
   chatQuestion,
   setChatQuestion,
-  selectedProperty,
   handleSubmit,
-  show,
-  setShow,
   createChat,
   ...props
 }) => {
-  const [offset, setOffset] = React.useState(80);
+  // const [offset, setOffset] = React.useState(80);
+  const offset = 80;
 
-  const bottom =
-    show & CHATSTATE.VISIBLE || show === CHATSTATE.IDLE ? 10 : -1000;
-  const quiet = () => {
-    setShow((s) => CHATSTATE.INITIALIZED + CHATSTATE.VISIBLE);
-  };
+  const modeListening = chatbot.state.matches("Accepting voice input");
+  const querying = ["initialize engine", "Process chat prompt"].some(
+    chatbot.state.matches
+  );
 
-  const talk = () => setShow(CHATSTATE.IDLE);
+  const bottom = 10; // !modeListening ? 10 : -1000;
+
+  const talk = () => chatbot.send("use voice");
 
   const textProps = {
+    chatbot,
     chatQuestion,
     setChatQuestion,
     talk,
@@ -182,16 +198,7 @@ const ChatterBox = ({
 
   return (
     <>
-      {show === CHATSTATE.IDLE && (
-        <VoiceInput
-          onComplete={quiet}
-          onChat={(q) => {
-            // alert(q);
-            // setChatQuestion(() => q);
-            handleSubmit(null, q);
-          }}
-        />
-      )}
+      {modeListening && <VoiceInput chatbot={chatbot} />}
 
       <div
         style={{
@@ -220,14 +227,16 @@ const ChatterBox = ({
               overflow: "scroll",
             }}
           >
-            {!chatMem.length && <EmptyChat onClick={createChat} />}
-            {chatMem.map((c, m) => (
+            {!chatbot.chatmem.length && (
+              <EmptyChat chatbot={chatbot} onClick={createChat} />
+            )}
+            {chatbot.chatmem.map((c, m) => (
               <ChatText key={m} {...c} />
             ))}
           </Box>
 
           <form onSubmit={handleSubmit}>
-            <YourComponent {...textProps} />
+            <ChatInput {...textProps} />
           </form>
         </Card>
       </div>
@@ -235,10 +244,10 @@ const ChatterBox = ({
   );
 };
 
-const EmptyChat = ({ onClick }) => {
+const EmptyChat = ({ onClick, chatbot }) => {
+  const ready2Chat = chatbot.state.matches("waiting for input");
   return (
     <Stack
-      onClick={onClick}
       sx={{
         width: "100%",
         height: "100%",
@@ -247,8 +256,12 @@ const EmptyChat = ({ onClick }) => {
         display: "flex",
       }}
     >
-      Click here to ask any question
+      <Typography>
+        {ready2Chat ? "Click here to ask any question" : "Loading..."}
+      </Typography>
       <Fab
+        onClick={onClick}
+        disabled={!ready2Chat}
         color="primary"
         sx={{
           width: 94,

@@ -19,12 +19,12 @@ export const attitudes = [
   "dramatic gothic prose",
 ];
 
-const defineSys = async (
+const defineSys = (
   file,
   attitude = "sarcastic and disgruntled",
-  lang
+  lang,
+  place
 ) => {
-  const place = await getLocation();
   const content = !file?.name
     ? `Your answers should be ${attitude} but accurate and complete. `
     : `refer to this ${file.text}`;

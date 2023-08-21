@@ -10,7 +10,7 @@ export const getLocation = () =>
           const longitude = position.coords.longitude;
 
           // Do something with the latitude and longitude values
-          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+          // console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
           resolve({
             latitude,
             longitude,

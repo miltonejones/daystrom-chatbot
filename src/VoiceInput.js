@@ -8,57 +8,57 @@ import Button from "@mui/material/Button";
 import { IconButton, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
-const VoiceInput = ({ onChat, onComplete }) => {
-  const [isListening, setIsListening] = useState(false);
+const VoiceInput = ({ chatbot, onComplete }) => {
+  const [isListening, setIsListening] = useState(true);
   const recognitionRef = useRef(null);
   const [question, setQuestion] = useState("");
 
-  useEffect(() => {
-    // Initialize SpeechRecognition
-    setQuestion(
-      sarcasticQuestions[Math.floor(Math.random() * sarcasticQuestions.length)]
-    );
+  // useEffect(() => {
+  //   // Initialize SpeechRecognition
+  //   setQuestion(
+  //     sarcasticQuestions[Math.floor(Math.random() * sarcasticQuestions.length)]
+  //   );
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognitionRef.current = recognition;
+  //   const SpeechRecognition =
+  //     window.SpeechRecognition || window.webkitSpeechRecognition;
+  //   if (SpeechRecognition) {
+  //     const recognition = new SpeechRecognition();
+  //     recognitionRef.current = recognition;
 
-      // // Set a timeout of 5 seconds
-      // const timeout = setTimeout(() => {
-      //   recognition.stop();
-      //   onComplete();
-      //   console.log("Speech recognition timed out");
-      // }, 5000);
+  //     // // Set a timeout of 5 seconds
+  //     // const timeout = setTimeout(() => {
+  //     //   recognition.stop();
+  //     //   onComplete();
+  //     //   console.log("Speech recognition timed out");
+  //     // }, 5000);
 
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
+  //     recognition.onstart = () => {
+  //       setIsListening(true);
+  //     };
 
-      recognition.onend = () => {
-        setIsListening(false);
-      };
+  //     recognition.onend = () => {
+  //       setIsListening(false);
+  //     };
 
-      recognition.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        // clearTimeout(timeout);
-        onChat(text);
-        onComplete();
-      };
+  //     recognition.onresult = (event) => {
+  //       const text = event.results[0][0].transcript;
+  //       // clearTimeout(timeout);
+  //       onChat(text);
+  //       onComplete();
+  //     };
 
-      recognition.start();
-    } else {
-      alert("Your browser doesn't support speech recognition.");
-    }
+  //     recognition.start();
+  //   } else {
+  //     alert("Your browser doesn't support speech recognition.");
+  //   }
 
-    // Cleanup on unmount
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
-  }, [onChat]);
+  //   // Cleanup on unmount
+  //   return () => {
+  //     if (recognitionRef.current) {
+  //       recognitionRef.current.stop();
+  //     }
+  //   };
+  // }, [onChat]);
 
   return (
     <Drawer open={isListening} anchor="bottom">
@@ -79,8 +79,7 @@ const VoiceInput = ({ onChat, onComplete }) => {
             <b>Speak now</b>
             <IconButton
               onClick={() => {
-                recognitionRef.current.stop();
-                onComplete();
+                chatbot.send("cancel");
               }}
             >
               <Close />
@@ -94,7 +93,7 @@ const VoiceInput = ({ onChat, onComplete }) => {
               width: "100vw",
             }}
           >
-            {question}
+            {chatbot.question}
           </Alert>
           <Typography
             variant="h5"

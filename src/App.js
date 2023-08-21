@@ -166,30 +166,6 @@ export default function App() {
             </>
           )}
 
-          {/* <Typography
-            sx={{
-              ml: 2,
-            }}
-            variant="subtitle2"
-          >
-            History
-          </Typography> */}
-
-          {/* <ul>
-            {Object.keys(conversations)
-              .filter((key) => key !== sessionPayload.guid)
-              .map((key) => (
-                <li
-                  className={!!conversations[key].agent ? "attach" : "normal"}
-                  onClick={() => {
-                    setChat(conversations[key]);
-                  }}
-                >
-                  {conversations[key].title}{" "}
-                </li>
-              ))}
-          </ul> */}
-
           <ConversationList chatbot={chatbot} />
         </Stack>
       </Drawer>

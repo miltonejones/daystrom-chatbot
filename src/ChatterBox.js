@@ -277,6 +277,7 @@ const EmptyChat = ({ onClick, chatbot }) => {
       sx={{
         width: "100%",
         height: "100%",
+        maxHeight: "80vh",
         alignItems: "center",
         justifyContent: "center",
         display: "flex",
@@ -304,6 +305,7 @@ const EmptyChat = ({ onClick, chatbot }) => {
         sx={{
           mt: 2,
           color: (t) => t.palette.grey[600],
+          textAlign: "center",
         }}
       >
         ChatGPT may produce inaccurate information about people, places, or

@@ -196,7 +196,9 @@ const ChatterBox = ({
   // const [offset, setOffset] = React.useState(80);
   const offset = 80;
 
-  const modeListening = chatbot.state.matches("Accepting voice input");
+  const modeListening = ["pause for effect", "Accepting voice input"].some(
+    chatbot.state.matches
+  );
   const querying = ["initialize engine", "Process chat prompt"].some(
     chatbot.state.matches
   );
@@ -250,6 +252,13 @@ const ChatterBox = ({
             {chatbot.chatmem.map((c, m) => (
               <ChatText key={m} {...c} />
             ))}
+            {!!chatbot.streamText && (
+              <ChatText
+                role="assistant"
+                content={chatbot.streamText}
+                timestamp={new Date().getTime()}
+              />
+            )}
           </Box>
 
           <form onSubmit={handleSubmit}>

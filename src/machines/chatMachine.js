@@ -60,11 +60,19 @@ const machine = createMachine(
             },
             on: {
               done: {
-                target: "#Daystrom chatbot.Process chat prompt",
+                target: "#Daystrom chatbot.pause for effect",
                 actions: {
                   type: "assignPrompt",
                   params: {},
                 },
+              },
+              "user talking": {
+                actions: {
+                  type: "assignTranscript",
+                  params: {},
+                },
+                description: "Voice input is being transcribed",
+                internal: true,
               },
             },
           },
@@ -124,6 +132,16 @@ const machine = createMachine(
                   },
                 },
               ],
+            },
+            on: {
+              "stream response": {
+                actions: {
+                  type: "assignStreamText",
+                  params: {},
+                },
+                description: "Chat response is being streamed from the server",
+                internal: true,
+              },
             },
           },
         },
@@ -304,6 +322,21 @@ const machine = createMachine(
           ],
         },
       },
+      "pause for effect": {
+        description: "Pause to show the spoken text in the UI",
+        after: {
+          1000: [
+            {
+              target: "#Daystrom chatbot.Process chat prompt",
+              actions: [],
+              meta: {},
+            },
+            {
+              internal: false,
+            },
+          ],
+        },
+      },
     },
     predictableActionArguments: true,
     preserveActionOrder: true,
@@ -315,14 +348,20 @@ const machine = createMachine(
       })),
 
       assignAsstTitle: assign(() => ({
+        transcript: "",
         question:
           sarcasticQuestions[
             Math.floor(Math.random() * sarcasticQuestions.length)
           ],
       })),
 
-      assignPrompt: assign((_, event) => ({
-        prompt: event.text,
+      assignTranscript: assign((_, event) => ({
+        transcript: event.text,
+      })),
+
+      assignPrompt: assign((context, event) => ({
+        prompt: context.transcript,
+        // transcript: "",
       })),
 
       setProp: assign((_, event) => ({
@@ -374,6 +413,12 @@ const machine = createMachine(
         listOpen: false,
       })),
 
+      assignStreamText: assign((_, event) => {
+        return {
+          streamText: event.text,
+        };
+      }),
+
       assignPayload: assign((_, event) => {
         return {
           ...event.data.result,
@@ -386,6 +431,7 @@ const machine = createMachine(
         const loggedAnswer = { ...answer, timestamp: new Date().getTime() };
 
         return {
+          streamText: null,
           chatmem: [...context.chatmem, loggedAnswer],
           voiceText: answer.content,
         };
@@ -450,10 +496,20 @@ export const useChatMachine = () => {
         attachClicks();
       },
 
-      askGPT: async (context, event) => {
+      askGPT: async (context) => {
+        // Extract relevant data from context.
         const { query, tokens, temp } = context;
-        const res = await generateText(query, tokens, temp);
-        return res;
+
+        // Generate text based on provided parameters.
+        const responseText = await generateText(
+          query,
+          tokens,
+          temp,
+          handleStreamResponse
+        );
+
+        // Return the response in a structured format.
+        return formatResponse(responseText);
       },
 
       startListening: () => {
@@ -464,11 +520,11 @@ export const useChatMachine = () => {
         return {};
       },
 
-      getConversations: async (context, event) => {
+      getConversations: async () => {
         return JSON.parse((await store.getItem(COOKIE_NAME)) || "{}");
       },
 
-      updatePayload: async (context, event) => {
+      updatePayload: async (context) => {
         const payload = {
           ...context.payload,
           agent: context.contentText || context.payload.agent,
@@ -490,7 +546,7 @@ export const useChatMachine = () => {
         const guid = generateGuid();
         const convo = [
           ...context.chatmem,
-          create("come up with a short title for this conversation"),
+          create("create a short title for this conversation"),
         ];
         const res = await generateText(convo, 512);
         const answer = res.choices[0].message;
@@ -523,13 +579,19 @@ export const useChatMachine = () => {
     },
   });
 
+  recognition.interimResults = true;
+
   recognition.onerror = (event) => {
     send("timeout");
   };
 
+  recognition.onend = (event) => {
+    send("done");
+  };
+
   recognition.onresult = (event) => {
     const text = event.results[0][0].transcript;
-    send("done", { text });
+    send("user talking", { text });
   };
 
   const setState = (name, value) => {
@@ -559,6 +621,38 @@ export const useChatMachine = () => {
   const setListOpen = (val) => {
     setState("listOpen", val);
   };
+
+  /**
+   * Callback function to handle streaming response.
+   *
+   * @param {string} str - The string to log and send.
+   */
+  function handleStreamResponse(str) {
+    // Send the response.
+    send({
+      type: "stream response",
+      text: str,
+    });
+  }
+
+  /**
+   * Format the response for a chatbot interface.
+   *
+   * @param {string} text - The response text.
+   * @returns {Object} - A structured response.
+   */
+  function formatResponse(text) {
+    return {
+      choices: [
+        {
+          message: {
+            role: "assistant",
+            content: text,
+          },
+        },
+      ],
+    };
+  }
 
   return {
     ...state.context,
@@ -612,18 +706,11 @@ const sarcasticQuestions = [
   "What do you want, genius?",
   "Oh, it's you again. What?",
   "Surprise, surprise! What now?",
-  "Do enlighten me with your request.",
-  "Yes, yes, I'm all ears. Spit it out!",
-  "Can't get enough of me, huh? What is it this time?",
-  "What can the center of the universe (you) want from me now?",
-  "And here I thought my day couldn't get any worse. What do you want?",
-  "Are we really doing this? What do you want?",
-  "Ready to grace me with your demands? Shoot.",
-  "Oh joy, another request. What'll it be?",
-  "Was hoping you'd leave me alone, but alas! What's your wish?",
-  "Guess who's back! So, what's on the menu today?",
-  "Back for more, are we? Lay it on me.",
-  "Couldn't resist my charm? What's your request?",
+  "Spit it out!",
+  "What is it this time?",
+  "What'll it be?",
+  "Lay it on me.",
+  "What's your request?",
 ];
 
 const defaultProps = {

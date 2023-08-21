@@ -13,6 +13,7 @@ import { Avatar, Box } from "@mui/material";
 import SettingsPopover from "./SettingsPopover";
 import { Close } from "@mui/icons-material";
 import { useChatMachine } from "./machines/chatMachine";
+import ConversationList from "./ConversationList";
 
 export default function App() {
   const chatbot = useChatMachine();
@@ -165,16 +166,16 @@ export default function App() {
             </>
           )}
 
-          <Typography
+          {/* <Typography
             sx={{
               ml: 2,
             }}
             variant="subtitle2"
           >
             History
-          </Typography>
+          </Typography> */}
 
-          <ul>
+          {/* <ul>
             {Object.keys(conversations)
               .filter((key) => key !== sessionPayload.guid)
               .map((key) => (
@@ -187,7 +188,9 @@ export default function App() {
                   {conversations[key].title}{" "}
                 </li>
               ))}
-          </ul>
+          </ul> */}
+
+          <ConversationList chatbot={chatbot} />
         </Stack>
       </Drawer>
 

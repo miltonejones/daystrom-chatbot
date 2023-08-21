@@ -5,7 +5,7 @@ import Drawer from "@mui/material/Drawer";
 import Alert from "@mui/material/Alert";
 import MicIcon from "@mui/icons-material/Mic";
 import Button from "@mui/material/Button";
-import { Fab, IconButton, Typography } from "@mui/material";
+import { Fab, IconButton, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { pulsate } from "./util/pulsate";
 
@@ -86,7 +86,7 @@ const VoiceInput = ({ chatbot, onComplete }) => {
               <Close />
             </IconButton>
           </Box>
-          <Alert
+          {/* <Alert
             severity="error"
             sx={{
               position: "absolute",
@@ -95,17 +95,27 @@ const VoiceInput = ({ chatbot, onComplete }) => {
             }}
           >
             {chatbot.question}
-          </Alert>
-          <Typography
-            variant="h5"
-            sx={{
-              textAlign: "center",
-              mt: 6,
-              color: (t) => t.palette.grey[600],
-            }}
-          >
-            What can I help you with?
-          </Typography>
+          </Alert> */}
+          <Stack>
+            <Typography
+              variant="h5"
+              sx={{
+                textAlign: "center",
+                mt: 6,
+                color: (t) => t.palette.grey[600],
+              }}
+            >
+              {chatbot.question}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                textAlign: "center",
+              }}
+            >
+              {chatbot.transcript}
+            </Typography>
+          </Stack>
           <Box
             sx={{
               width: "100%",

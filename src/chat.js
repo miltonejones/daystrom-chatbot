@@ -111,14 +111,6 @@ const generateText = async (msgs, max_tokens = 128, temperature = 0.9, fn) => {
     }),
   };
 
-  /**
-   * Sends a POST request to OpenAI's API and returns a Promise that resolves with the response JSON
-   * @async
-   * @function
-   * @param {string} url - The URL to send the request to
-   * @param {Object} options - The options to include in the request
-   * @returns {Promise<Object>} - A Promise that resolves with the response JSON
-   */
   const response = await fetch(
     "https://api.openai.com/v1/chat/completions",
     requestOptions

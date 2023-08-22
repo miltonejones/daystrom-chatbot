@@ -161,10 +161,6 @@ function ChatInput({
             justifyContent: "space-between",
           }}
         >
-          {/* <AttachmentButton
-            edge="end"
-            fileLoaded={(object) => chatbot.setState("contentText", object)}
-          /> */}
           <IconButton onClick={() => setSpeak(!speak)}>
             {speak ? <VolumeUpIcon /> : <VolumeOffIcon />}
           </IconButton>
@@ -235,7 +231,8 @@ const ChatterBox = ({
         <Card
           sx={{
             p: 1,
-            outline: "dotted 1px green",
+            outline: "dotted 3px green",
+            height: "calc(100vh - 40px)",
           }}
           elevation={6}
           variant="elevation"

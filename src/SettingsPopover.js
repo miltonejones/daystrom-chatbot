@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { Divider, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { Switch, FormControlLabel } from "@mui/material";
 
 function generateMarks(min, max, step, binary) {
   const marks = [];
@@ -57,18 +58,18 @@ class CustomSlider extends React.Component {
   }
 }
 
-const SettingsPopover = ({
-  items,
-  attitude,
-  setAttitude,
-  temp,
-  setTemp,
-  tokens,
-  setTokens,
-  lang,
-  setLang,
-}) => {
+const SettingsPopover = ({ items, chatbot }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const {
+    attitude,
+    setAttitude,
+    temp,
+    setTemp,
+    tokens,
+    setTokens,
+    lang,
+    setLang,
+  } = chatbot;
 
   const isOpen = Boolean(anchorEl);
   const id = isOpen ? "settings-popover" : undefined;
@@ -149,26 +150,71 @@ const SettingsPopover = ({
               </MenuItem>
             ))}
           </TextField>
-          <Typography sx={{ mt: 1.5 }} variant="caption">
-            Composure
-          </Typography>
-          <TextField
-            select
-            size="small"
-            value={attitude}
-            onChange={handleSelectChange}
-            displayEmpty
-            fullWidth
-          >
-            {Object.keys(items).map((item, index) => (
-              <MenuItem key={index} value={items[item]}>
-                {item}
-              </MenuItem>
-            ))}
-          </TextField>
+
+          <Flex spacing={2} sx={{ width: "100%" }}>
+            <Stack>
+              <Typography sx={{ mt: 1.5 }} variant="caption">
+                Composure
+              </Typography>
+              <TextField
+                select
+                size="small"
+                value={attitude}
+                onChange={handleSelectChange}
+                displayEmpty
+                fullWidth
+              >
+                {Object.keys(items).map((item, index) => (
+                  <MenuItem key={index} value={items[item]}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Stack>
+
+            <Stack>
+              <Typography sx={{ mt: 1.5 }} variant="caption">
+                Auto Open
+              </Typography>
+              <Option
+                value={chatbot.autoOpen === "true"}
+                onChange={(e) => chatbot.setAutoOpen(e ? "true" : "false")}
+              />
+            </Stack>
+          </Flex>
         </Stack>
       </Drawer>
     </Box>
+  );
+};
+
+const Option = ({ value, onChange }) => {
+  const handleToggle = (event) => {
+    onChange(event.target.checked);
+  };
+
+  return (
+    <div>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={value}
+            onChange={handleToggle}
+            name="autoOpen"
+            color="primary"
+          />
+        }
+        label={value ? "Auto Open is ON" : "Auto Open is OFF"}
+      />
+    </div>
+  );
+};
+
+const Flex = ({ children, ...props }) => {
+  return (
+    <Stack direction="row" alignItems="center" {...props}>
+      {children}
+    </Stack>
   );
 };
 

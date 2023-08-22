@@ -33,13 +33,6 @@ export default function App() {
 
   const setChatQuestion = (str) => chatbot.setState("prompt", str);
 
-  const setChat = (payload) => {
-    chatbot.send({
-      type: "change conversation",
-      payload,
-    });
-  };
-
   const renameConversation = React.useCallback(async (id, name) => {
     chatbot.send({
       type: "rename",
@@ -75,14 +68,7 @@ export default function App() {
   };
 
   const settingsProps = {
-    attitude,
-    setAttitude,
-    temp,
-    setTemp,
-    tokens,
-    setTokens,
-    lang,
-    setLang,
+    chatbot,
   };
 
   return (

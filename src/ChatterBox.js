@@ -18,25 +18,7 @@ import { Avatar, Collapse, Fab, styled } from "@mui/material";
 import { CopyAll, Mic, Sync } from "@mui/icons-material";
 import useClipboard from "./hooks/useClipboard";
 import AttachmentButton from "./styled/AttachmentButton";
-import { keyframes } from "@emotion/react";
 import TinyButton from "./styled/TinyButton";
-import AppFooter from "./AppFooter";
-
-// Define the keyframes for the pulsate animation
-const pulsate = keyframes`
-  0% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-`;
 
 const HomepageTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
@@ -198,7 +180,6 @@ const ChatterBox = ({
   createChat,
   ...props
 }) => {
-  // const [offset, setOffset] = React.useState(80);
   const offset = 130;
 
   const modeListening = ["pause for effect", "Accepting voice input"].some(
@@ -346,53 +327,65 @@ function ChatText({ retry, role, content, index, timestamp }) {
           MJ
         </Avatar>
       )}
-      {role === "user" && <TimeStamp time={timestamp} />}
-      <Card
-        sx={{
-          backgroundColor: (t) =>
-            role === "user" ? `rgb(0, 122, 255)` : `rgb(0, 166, 78)`,
-          color: (t) => t.palette.common.white,
-          borderRadius: 2,
-          maxWidth: "100%",
-          p: 1,
-          overflow: "auto",
-        }}
-      >
-        <ReactMarkdown>{content}</ReactMarkdown>
-        {role !== "user" && !!index && (
-          <>
-            <Typography
-              sx={{ pt: 2, cursor: "pointer" }}
-              onClick={() => copy(content)}
-              variant="caption"
-            >
-              <TinyButton icon={CopyAll} />
-              {copied ? "Copied!" : "Copy"}
-            </Typography>
-            <Typography
-              sx={{ pt: 2, cursor: "pointer" }}
-              onClick={() => retry(index)}
-              variant="caption"
-            >
-              <TinyButton icon={Sync} />
-              Retry
-            </Typography>
-          </>
-        )}
-      </Card>
-      {role !== "user" && <TimeStamp time={timestamp} />}
+
+      {/* {role === "user" && <TimeStamp time={timestamp} />} */}
+      <Box>
+        <Card
+          sx={{
+            backgroundColor: (t) =>
+              role === "user" ? `rgb(0, 122, 255)` : `rgb(0, 166, 78)`,
+            color: (t) => t.palette.common.white,
+            borderRadius: 2,
+            maxWidth: "100%",
+            p: 1,
+            overflow: "auto",
+          }}
+        >
+          <ReactMarkdown>{content}</ReactMarkdown>
+          {role !== "user" && !!index && (
+            <>
+              <Typography
+                sx={{ pt: 2, cursor: "pointer" }}
+                onClick={() => copy(content)}
+                variant="caption"
+              >
+                <TinyButton icon={CopyAll} />
+                {copied ? "Copied!" : "Copy"}
+              </Typography>
+              <Typography
+                sx={{ pt: 2, cursor: "pointer" }}
+                onClick={() => retry(index)}
+                variant="caption"
+              >
+                <TinyButton icon={Sync} />
+                Retry
+              </Typography>
+            </>
+          )}
+        </Card>
+        <TimeStamp
+          time={timestamp}
+          align={role === "user" ? "right" : "left"}
+        />
+      </Box>
+
+      {/* {role !== "user" && <TimeStamp time={timestamp} />} */}
+
       {role === "user" && <Avatar sizes="small">MJ</Avatar>}
     </Box>
   );
 }
 
-function TimeStamp({ time }) {
+function TimeStamp({ time, align }) {
   if (isNaN(time)) return <i />;
   return (
     <Typography
+      component="div"
       sx={{
         whiteSpace: "nowrap",
         color: (t) => t.palette.grey[500],
+        textAlign: align,
+        width: "100%",
       }}
       variant="caption"
     >

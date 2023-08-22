@@ -36,7 +36,7 @@ const machine = createMachine(
           id: "invoke-t4exj",
           onDone: [
             {
-              target: "Accepting voice input",
+              target: "app start",
               actions: {
                 type: "assignUserData",
                 params: {},
@@ -45,7 +45,18 @@ const machine = createMachine(
           ],
         },
       },
-
+      "app start": {
+        description: "Route to voice or idle state based on settings",
+        always: [
+          {
+            target: "Accepting voice input",
+            cond: "auto listen",
+          },
+          {
+            target: "waiting for input",
+          },
+        ],
+      },
       "Accepting voice input": {
         entry: {
           type: "assignAsstTitle",
@@ -436,6 +447,7 @@ const machine = createMachine(
         listOpen: false,
         chatmem: [],
         payload: {},
+        contentText: "",
       })),
       assignConversations: assign((_, event) => ({
         conversations: event.data,
@@ -495,6 +507,7 @@ const machine = createMachine(
     guards: {
       "payload has title": (context) => !!context.payload.title,
       "use silent response": (context) => !context.speak,
+      "auto listen": (context) => context.autoOpen === "true",
       "text was detected": (context) => !!context.transcript?.length,
     },
     delays: {},
@@ -635,12 +648,11 @@ export const useChatMachine = () => {
     send("set state value", { name, value });
   };
 
-  const [setLang, setTokens, setTemp, setAttitude, setMode] = Object.keys(
-    defaultProps
-  ).map((key) => (value) => {
-    localStorage.setItem(key, value);
-    setState(key, value);
-  });
+  const [setLang, setTokens, setTemp, setAttitude, setMode, setAutoOpen] =
+    Object.keys(defaultProps).map((key) => (value) => {
+      localStorage.setItem(key, value);
+      setState(key, value);
+    });
 
   const setSpeak = (val) => {
     localStorage.setItem("speak", val);
@@ -698,6 +710,7 @@ export const useChatMachine = () => {
     setSpeak,
     setListOpen,
     setState,
+    setAutoOpen,
   };
 };
 
@@ -757,5 +770,6 @@ const defaultProps = {
   temp: 0.4,
   attitude: attitudes[0],
   mode: "voice",
+  autoOpen: "true",
   speak: true,
 };

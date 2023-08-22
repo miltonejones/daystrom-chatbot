@@ -20,6 +20,7 @@ import useClipboard from "./hooks/useClipboard";
 import AttachmentButton from "./styled/AttachmentButton";
 import { keyframes } from "@emotion/react";
 import TinyButton from "./styled/TinyButton";
+import AppFooter from "./AppFooter";
 
 // Define the keyframes for the pulsate animation
 const pulsate = keyframes`
@@ -76,7 +77,14 @@ function ChatInput({
     <Stack
       direction="row"
       sx={{
-        alignItems: "center",
+        width: "calc(100vw - 32px)",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        backgroundColor: "#fff",
+        borderTop: "1px solid #e0e0e0",
+        justifyContent: "space-between",
+        padding: "8px 16px",
       }}
     >
       <Collapse orientation="horizontal" in={mode !== "voice"}>
@@ -191,7 +199,7 @@ const ChatterBox = ({
   ...props
 }) => {
   // const [offset, setOffset] = React.useState(80);
-  const offset = 80;
+  const offset = 130;
 
   const modeListening = ["pause for effect", "Accepting voice input"].some(
     chatbot.state.matches
@@ -212,6 +220,8 @@ const ChatterBox = ({
     ...props,
   };
 
+  const windowHeight = "100vh";
+
   return (
     <>
       {modeListening && <VoiceInput chatbot={chatbot} />}
@@ -219,19 +229,17 @@ const ChatterBox = ({
       <div
         style={{
           transition: "all 0.3s linear",
-          outline: "dotted 1px purple",
           width: "calc(100vw - 20px)",
-          height: `calc(100vh - ${offset}px)`,
+          height: `calc(${windowHeight} - ${offset}px)`,
           overflow: "hidden",
         }}
       >
         <Card
           sx={{
             p: 1,
-            outline: "dotted 3px green",
-            height: "calc(100vh - 40px)",
+            height: `calc(${windowHeight} - ${offset + 20}px)`,
           }}
-          elevation={6}
+          elevation={2}
           variant="elevation"
         >
           {!!querying && <LinearProgress />}
@@ -239,9 +247,8 @@ const ChatterBox = ({
           <Box
             sx={{
               mb: 1,
-              height: `calc(100vh - ${offset + 60}px)`,
+              height: `calc(${windowHeight} - ${offset}px)`,
               overflow: "scroll",
-              outline: "dotted 1px red",
             }}
           >
             {!chatbot.chatmem.length && (
@@ -268,12 +275,11 @@ const ChatterBox = ({
               />
             )}
           </Box>
-
-          <form onSubmit={handleSubmit}>
-            <ChatInput {...textProps} />
-          </form>
         </Card>
       </div>
+      <form onSubmit={handleSubmit}>
+        <ChatInput {...textProps} />
+      </form>
     </>
   );
 };

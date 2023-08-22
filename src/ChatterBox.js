@@ -226,6 +226,7 @@ const ChatterBox = ({
           bottom,
           transition: "all 0.3s linear",
           right: 10,
+          outline: "dotted 1px purple",
           width: "calc(100vw - 20px)",
           height: `calc(100vh - ${offset}px)`,
           overflow: "hidden",
@@ -234,6 +235,7 @@ const ChatterBox = ({
         <Card
           sx={{
             p: 1,
+            outline: "dotted 1px green",
           }}
           elevation={6}
           variant="elevation"
@@ -245,6 +247,7 @@ const ChatterBox = ({
               mb: 1,
               height: `calc(100vh - ${offset + 60}px)`,
               overflow: "scroll",
+              outline: "dotted 1px red",
             }}
           >
             {!chatbot.chatmem.length && (

@@ -218,10 +218,7 @@ const ChatterBox = ({
 
       <div
         style={{
-          position: "fixed",
-          bottom,
           transition: "all 0.3s linear",
-          right: 10,
           outline: "dotted 1px purple",
           width: "calc(100vw - 20px)",
           height: `calc(100vh - ${offset}px)`,

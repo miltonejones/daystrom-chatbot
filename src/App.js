@@ -1,31 +1,25 @@
 import React from "react";
 import "./style.css";
-import { attitudes, composure } from "./chat";
+import { composure } from "./chat";
 import ChatterBox from "./ChatterBox";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import Stack from "@mui/material/Stack";
 import TextMenu from "./TextMenu";
 import { Avatar, Box } from "@mui/material";
 import SettingsPopover from "./SettingsPopover";
-import { Close } from "@mui/icons-material";
 import { useChatMachine } from "./machines/chatMachine";
-import ConversationList from "./ConversationList";
+import SideDrawer from "./SideDrawer";
 
 export default function App() {
   const chatbot = useChatMachine();
 
   const {
-    conversations,
     lang,
     tokens,
     temp,
     attitude,
     mode,
-    listOpen,
     payload: sessionPayload,
     prompt: chatQuestion,
     setLang,
@@ -93,84 +87,9 @@ export default function App() {
 
   return (
     <div>
-      <Drawer
-        open={listOpen}
-        anchor="left"
-        onClose={() => {
-          setListOpen(false);
-        }}
-      >
-        <Stack
-          sx={{
-            width: "75vw",
-            maxWidth: 400,
-          }}
-        >
-          <Stack
-            spacing={1}
-            direction="row"
-            sx={{ alignItems: "center", p: 1 }}
-          >
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                cursor: "pointer",
-              }}
-              src="./Chat.png"
-              alt="logo"
-            />
+      <SideDrawer chatbot={chatbot} />
 
-            <b
-              onClick={() => {
-                setListOpen(false);
-              }}
-              style={{ color: "red " }}
-            >
-              <u>Daystrom</u>
-            </b>
-
-            <Box sx={{ flexGrow: 1 }} />
-
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={createChat}
-              endIcon={<>➕</>}
-            >
-              New Chat
-            </Button>
-            <IconButton
-              onClick={() => {
-                setListOpen(false);
-              }}
-            >
-              <Close />
-            </IconButton>
-          </Stack>
-
-          {!!sessionPayload.title && (
-            <>
-              <Typography
-                sx={{
-                  ml: 2,
-                }}
-                variant="subtitle2"
-              >
-                Current conversation
-              </Typography>
-
-              <ul>
-                <li className="normal selected">{sessionPayload.title}</li>
-              </ul>
-            </>
-          )}
-
-          <ConversationList chatbot={chatbot} />
-        </Stack>
-      </Drawer>
-
-      <Stack direction="row" sx={{ alignItems: "center" }} spacing={1}>
+      <Stack direction="row" sx={{ alignItems: "center", mb: 2 }} spacing={1}>
         <IconButton
           onClick={() => {
             setListOpen(true);
@@ -201,9 +120,9 @@ export default function App() {
           )}
         </TextMenu>
         <Box sx={{ flexGrow: 1 }} />
-        {/* {JSON.stringify(chatbot.state.value)} */}
         <SettingsPopover items={composure} {...settingsProps} />
       </Stack>
+
       <ChatterBox {...chatProps} />
     </div>
   );

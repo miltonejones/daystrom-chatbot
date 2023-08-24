@@ -8,24 +8,17 @@ import Stack from "@mui/material/Stack";
 import TextMenu from "./TextMenu";
 import { Avatar, Box } from "@mui/material";
 import SettingsPopover from "./SettingsPopover";
-import { useChatMachine } from "./machines/chatMachine";
+import { useChatMachine } from "./hooks/useChatMachine";
 import SideDrawer from "./SideDrawer";
+import { ErrorButton } from "./components/ErrorButton";
 
 export default function App() {
   const chatbot = useChatMachine();
 
   const {
-    lang,
-    tokens,
-    temp,
-    attitude,
     mode,
     payload: sessionPayload,
     prompt: chatQuestion,
-    setLang,
-    setTokens,
-    setTemp,
-    setAttitude,
     setMode,
     setSpeak,
     setListOpen,
@@ -107,6 +100,7 @@ export default function App() {
         </TextMenu>
         <Box sx={{ flexGrow: 1 }} />
         <SettingsPopover items={composure} {...settingsProps} />
+        <ErrorButton chatbot={chatbot} />
       </Stack>
 
       <ChatterBox {...chatProps} />

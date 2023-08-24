@@ -69,7 +69,6 @@ function TextMenu({ active, children: text, onChange, onDelete, onCreate }) {
         lineHeight: 1,
         fontWeight: active ? 600 : 400,
         "&:hover": {
-          // textDecoration: "underline",
           color: (th) => th.palette.primary.dark,
         },
       }

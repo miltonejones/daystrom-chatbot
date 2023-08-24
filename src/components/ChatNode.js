@@ -1,0 +1,103 @@
+import React from "react";
+import { Avatar, Box, Card, TextField } from "@mui/material";
+import useClipboard from "../hooks/useClipboard";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import TimeStamp from "./TimeStamp";
+import { Close, CopyAll, EditNote, Sync } from "@mui/icons-material";
+import ChatButton from "./ChatButton";
+import { HomepageTextField } from "../styled/HomepageTextField";
+
+function ChatNode({ retry, rephrase, role, content, index, timestamp }) {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [innerText, setInnerText] = React.useState();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    rephrase(innerText, index);
+    setIsEditing(false);
+  };
+  const { copy, copied } = useClipboard();
+  return (
+    <Box
+      sx={{
+        gap: 1,
+        display: "flex",
+        m: 2,
+        flexDirection: "row",
+        justifyContent: role === "user" ? "flex-end" : "flex-start",
+      }}
+    >
+      {role !== "user" && (
+        <Avatar src="./Chat.png" alt="id" sizes="small">
+          MJ
+        </Avatar>
+      )}
+
+      <Box>
+        <Card
+          sx={{
+            backgroundColor: (t) =>
+              role === "user" ? `rgb(0, 122, 255)` : `rgb(0, 166, 78)`,
+            color: (t) => t.palette.common.white,
+            borderRadius: 2,
+            maxWidth: "100%",
+            p: 1,
+            overflow: "auto",
+          }}
+        >
+          {" "}
+          {isEditing ? (
+            <form onSubmit={handleSubmit}>
+              <HomepageTextField
+                size="small"
+                fullWidth
+                autoFocus
+                sx={{ width: "calc(100vw - 180px)" }}
+                inputProps={{ style: { color: "white" } }}
+                InputLabelProps={{ style: { color: "white" } }}
+                value={innerText}
+                onChange={(e) => setInnerText(e.target.value)}
+              />
+            </form>
+          ) : (
+            <ReactMarkdown>{content}</ReactMarkdown>
+          )}
+          {role !== "user" && !!index && (
+            <>
+              <ChatButton icon={CopyAll} onClick={() => copy(content)}>
+                {copied ? "Copied!" : "Copy"}
+              </ChatButton>
+              <ChatButton icon={Sync} onClick={() => retry(index)}>
+                Retry
+              </ChatButton>
+            </>
+          )}
+          {role === "user" && (
+            <Box
+              sx={{
+                textAlign: "right",
+              }}
+            >
+              <ChatButton
+                icon={isEditing ? Close : EditNote}
+                onClick={() => {
+                  setInnerText(content);
+                  setIsEditing(!isEditing);
+                }}
+              >
+                {isEditing ? "Cancel" : "Edit"}
+              </ChatButton>
+            </Box>
+          )}
+        </Card>
+        <TimeStamp
+          time={timestamp}
+          align={role === "user" ? "right" : "left"}
+        />
+      </Box>
+
+      {role === "user" && <Avatar sizes="small">MJ</Avatar>}
+    </Box>
+  );
+}
+
+export default ChatNode;

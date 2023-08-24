@@ -1,14 +1,8 @@
-import React from "react";
-import { createMachine, assign } from "xstate";
-import { useMachine } from "@xstate/react";
-import { getLocation } from "../util/getLocation";
-import { attitudes, create, defineSys, generateText } from "../chat";
-import dynamoStorage from "../hooks/DynamoStorage";
-import { attachPreclick } from "../util/attachPreclick";
-import useClipboard from "../hooks/useClipboard";
-const COOKIE_NAME = "chat-conv-x";
+import { attitudes } from "../chat";
+import { chatActions } from "./actions/chatActions";
+import { createMachine } from "xstate";
 
-const machine = createMachine(
+export const chatMachine = createMachine(
   {
     id: "Daystrom chatbot",
     context: {
@@ -22,6 +16,7 @@ const machine = createMachine(
       speak: true,
       conversations: {},
       payload: {},
+      errorMessage: "There is no error at the moment.",
     },
     initial: "Initial state",
     states: {
@@ -64,6 +59,17 @@ const machine = createMachine(
         },
         initial: "start voice recognition",
         states: {
+          greet: {
+            invoke: {
+              src: "speakGreeting",
+              id: "invoke-qatlc",
+              onDone: [
+                {
+                  target: "start voice recognition",
+                },
+              ],
+            },
+          },
           "start voice recognition": {
             invoke: {
               src: "startListening",
@@ -116,7 +122,6 @@ const machine = createMachine(
           },
         },
       },
-
       "Process chat prompt": {
         initial: "Append question to history",
         states: {
@@ -150,6 +155,15 @@ const machine = createMachine(
                   },
                 },
               ],
+              onError: [
+                {
+                  target: "prompt error",
+                  actions: {
+                    type: "assignProblem",
+                    params: {},
+                  },
+                },
+              ],
             },
             on: {
               "stream response": {
@@ -162,9 +176,19 @@ const machine = createMachine(
               },
             },
           },
+          "prompt error": {
+            description: "Fault occurred sending prompt to LLM",
+            on: {
+              recover: {
+                target: "Send prompt to GPT",
+              },
+              cancel: {
+                target: "#Daystrom chatbot.waiting for input",
+              },
+            },
+          },
         },
       },
-
       "waiting for input": {
         description: "Screen is idle and waiting for command or mode change",
         initial: "pause for update",
@@ -257,9 +281,16 @@ const machine = createMachine(
             },
             description: "Ask the previous question again",
           },
+          rephrase: {
+            target: "Process chat prompt",
+            actions: {
+              type: "reformPayload",
+              params: {},
+            },
+            description: "Edit a previous question",
+          },
         },
       },
-
       "process chat response": {
         initial: "get all conversations",
         states: {
@@ -314,6 +345,15 @@ const machine = createMachine(
                 },
               ],
             },
+            on: {
+              "set payload title": {
+                actions: {
+                  type: "assignTitle",
+                  params: {},
+                },
+                internal: true,
+              },
+            },
           },
           "persist payload": {
             invoke: {
@@ -324,6 +364,23 @@ const machine = createMachine(
                   target: "#Daystrom chatbot.waiting for input",
                 },
               ],
+              onError: [
+                {
+                  target: "payload error",
+                  actions: {
+                    type: "assignProblem",
+                    params: {},
+                  },
+                },
+              ],
+            },
+          },
+          "payload error": {
+            description: "A fault occurred saving the payload to dynamoDb",
+            on: {
+              recover: {
+                target: "#Daystrom chatbot.waiting for input",
+              },
             },
           },
         },
@@ -333,9 +390,15 @@ const machine = createMachine(
           type: "clearSession",
           params: {},
         },
-        always: {
-          target: "Accepting voice input",
-        },
+        always: [
+          {
+            target: "Accepting voice input",
+            cond: "auto listen",
+          },
+          {
+            target: "waiting for input",
+          },
+        ],
       },
       "speak answer": {
         invoke: {
@@ -368,142 +431,7 @@ const machine = createMachine(
     preserveActionOrder: true,
   },
   {
-    actions: {
-      assignUserData: assign((_, event) => {
-        const props = Object.keys(defaultProps).reduce((out, key) => {
-          const value = localStorage.getItem(key);
-          if (value) out[key] = value;
-          return out;
-        }, {});
-
-        return {
-          userData: event.data,
-          ...props,
-        };
-      }),
-      resetPayload: assign((context, event) => {
-        const chatmem = context.chatmem.slice(0, event.index);
-        console.log({ chatmem });
-        // chatmem.pop();
-        const question = chatmem.pop();
-        return {
-          chatmem,
-          prompt: question.content,
-        };
-      }),
-
-      assignAsstTitle: assign(() => ({
-        transcript: "",
-        question:
-          sarcasticQuestions[
-            Math.floor(Math.random() * sarcasticQuestions.length)
-          ],
-      })),
-
-      assignTranscript: assign((_, event) => ({
-        transcript: event.text,
-      })),
-
-      assignPrompt: assign((context, event) => ({
-        prompt: context.transcript,
-        // transcript: "",
-      })),
-
-      setProp: assign((_, event) => ({
-        [event.name]: event.value,
-      })),
-
-      removeChat: assign((context, event) => {
-        const result = {
-          chatmem: [],
-          listOpen: true,
-          contentText: "",
-          payload: {},
-          conversations: Object.keys(context.conversations)
-            .filter((key) => key !== event.id)
-            .reduce((out, key) => {
-              out[key] = context.conversations[key];
-              return out;
-            }, {}),
-        };
-        return result;
-      }),
-
-      assignName: assign((context, event) => ({
-        payload: {
-          ...context.payload,
-          title: event.name,
-        },
-        conversations: {
-          ...context.conversations,
-          [context.payload.guid]: {
-            ...context.conversations[context.payload.guid],
-            title: event.name,
-          },
-        },
-      })),
-
-      clearSession: assign((_, event) => ({
-        listOpen: false,
-        chatmem: [],
-        payload: {},
-        contentText: "",
-      })),
-      assignConversations: assign((_, event) => ({
-        conversations: event.data,
-      })),
-      assignConversation: assign((_, event) => ({
-        payload: event.payload,
-        chatmem: event.payload.mem,
-        contentText: event.payload.agent,
-        listOpen: false,
-      })),
-
-      assignStreamText: assign((_, event) => {
-        return {
-          streamText: event.text,
-        };
-      }),
-
-      assignPayload: assign((_, event) => {
-        return {
-          ...event.data.result,
-        };
-      }),
-
-      assignResponse: assign((context, event) => {
-        const res = event.data;
-        const answer = res.choices[0].message;
-        const loggedAnswer = { ...answer, timestamp: new Date().getTime() };
-
-        return {
-          streamText: null,
-          chatmem: [...context.chatmem, loggedAnswer],
-          voiceText: answer.content,
-        };
-      }),
-
-      appendPrompt: assign((context, event) => {
-        const chat = create(context.prompt);
-        const query = [
-          defineSys(
-            context.contentText,
-            context.attitude,
-            context.lang,
-            context.userData
-          ),
-          ...context.chatmem,
-          chat,
-        ];
-
-        return {
-          prompt: "",
-          query,
-          chat,
-          chatmem: [...context.chatmem, chat],
-        };
-      }),
-    },
+    actions: chatActions,
     guards: {
       "payload has title": (context) => !!context.payload.title,
       "use silent response": (context) => !context.speak,
@@ -513,263 +441,3 @@ const machine = createMachine(
     delays: {},
   }
 );
-
-export const useChatMachine = () => {
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  const recognition = new SpeechRecognition();
-  const store = dynamoStorage();
-
-  const clipper = useClipboard();
-  const attachClicks = React.useCallback(() => {
-    const handleClick = (event) => {
-      clipper.copy(event.target.innerText);
-      event.target.classList.add("clicked");
-      setTimeout(() => {
-        event.target.classList.remove("clicked");
-      }, 999);
-    };
-    attachPreclick(handleClick);
-  }, [clipper]);
-
-  const [state, send] = useMachine(machine, {
-    services: {
-      getUserData: async (context, event) => {
-        const place = await getLocation();
-        return place;
-      },
-
-      interfaceLoaded: () => {
-        attachClicks();
-      },
-
-      askGPT: async (context) => {
-        // Extract relevant data from context.
-        const { query, tokens, temp } = context;
-
-        // Generate text based on provided parameters.
-        const responseText = await generateText(
-          query,
-          tokens,
-          temp,
-          handleStreamResponse
-        );
-
-        // Return the response in a structured format.
-        return formatResponse(responseText);
-      },
-
-      startListening: () => {
-        recognition.start();
-      },
-      stopListening: async () => {
-        recognition.stop();
-        return {};
-      },
-
-      getConversations: async () => {
-        return JSON.parse((await store.getItem(COOKIE_NAME)) || "{}");
-      },
-
-      updatePayload: async (context) => {
-        const payload = {
-          ...context.payload,
-          agent: context.contentText || context.payload.agent,
-          mem: context.chatmem,
-        };
-
-        return {
-          result: {
-            payload,
-            conversations: {
-              ...context.conversations,
-              [payload.guid]: payload,
-            },
-          },
-        };
-      },
-
-      createPayload: async (context, event) => {
-        const guid = generateGuid();
-        const convo = [
-          ...context.chatmem,
-          create("create a short title for this conversation"),
-        ];
-        const res = await generateText(convo, 512);
-        const answer = res.choices[0].message;
-        const payload = {
-          guid,
-          agent: context.contentText || context.payload.agent,
-          title: answer.content,
-          mem: context.chatmem,
-        };
-
-        return {
-          result: {
-            sessionID: guid,
-            payload,
-            conversations: {
-              ...context.conversations,
-              [payload.guid]: payload,
-            },
-          },
-        };
-      },
-
-      persistPayload: async (context, event) => {
-        await store.setItem(COOKIE_NAME, JSON.stringify(context.conversations));
-      },
-
-      speakText: async (context, event) => {
-        announceText(context.voiceText, context.lang);
-      },
-    },
-  });
-
-  recognition.interimResults = true;
-
-  recognition.onerror = (event) => {
-    // alert("timeout");
-    send("timeout");
-  };
-
-  recognition.onend = (event) => {
-    // alert("done");
-    send("done");
-  };
-
-  recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
-    send("user talking", { text });
-  };
-
-  const setState = (name, value) => {
-    send("set state value", { name, value });
-  };
-
-  const [setLang, setTokens, setTemp, setAttitude, setMode, setAutoOpen] =
-    Object.keys(defaultProps).map((key) => (value) => {
-      localStorage.setItem(key, value);
-      setState(key, value);
-    });
-
-  const setSpeak = (val) => {
-    localStorage.setItem("speak", val);
-    setState("speak", val);
-    !val && speechSynthesis.cancel();
-  };
-
-  const setListOpen = (val) => {
-    setState("listOpen", val);
-  };
-
-  /**
-   * Callback function to handle streaming response.
-   *
-   * @param {string} str - The string to log and send.
-   */
-  function handleStreamResponse(str) {
-    // Send the response.
-    send({
-      type: "stream response",
-      text: str,
-    });
-  }
-
-  /**
-   * Format the response for a chatbot interface.
-   *
-   * @param {string} text - The response text.
-   * @returns {Object} - A structured response.
-   */
-  function formatResponse(text) {
-    return {
-      choices: [
-        {
-          message: {
-            role: "assistant",
-            content: text,
-          },
-        },
-      ],
-    };
-  }
-
-  return {
-    ...state.context,
-    state,
-    send,
-
-    // exposed helper methods
-    setLang,
-    setTokens,
-    setTemp,
-    setAttitude,
-    setMode,
-    setSpeak,
-    setListOpen,
-    setState,
-    setAutoOpen,
-  };
-};
-
-function generateGuid() {
-  let guid = "";
-  for (let i = 0; i < 11; i++) {
-    let randomNum = Math.floor(Math.random() * 16);
-    if (randomNum < 10) {
-      guid += randomNum;
-    } else {
-      guid += String.fromCharCode(randomNum + 87);
-    }
-  }
-  return guid;
-}
-
-function announceText(speechText, lang) {
-  // Check if speech synthesis is supported in the browser
-  if ("speechSynthesis" in window) {
-    // Create a new SpeechSynthesisUtterance object
-    var utterance = new SpeechSynthesisUtterance(speechText);
-
-    // Use the default speech synthesis voice
-    utterance.voice = speechSynthesis.getVoices()[0];
-    // Set the language to US English (en-US)
-    utterance.lang = lang;
-
-    // Start speaking the text
-    speechSynthesis.speak(utterance);
-  } else {
-    console.error("Speech synthesis is not supported in this browser.");
-  }
-}
-
-function removeBetweenBackticks(str) {
-  return str.replace(/```.*?```/gs, "");
-}
-
-// Test
-let s = "Hello ```This is inside backticks``` World!";
-console.log(removeBetweenBackticks(s));
-
-const sarcasticQuestions = [
-  "What do you want, genius?",
-  "Oh, it's you again. What?",
-  "Surprise, surprise! What now?",
-  "Spit it out!",
-  "What is it this time?",
-  "What'll it be?",
-  "Lay it on me.",
-  "What's your request?",
-];
-
-const defaultProps = {
-  lang: "en-US",
-  tokens: 512,
-  temp: 0.4,
-  attitude: attitudes[0],
-  mode: "voice",
-  autoOpen: "true",
-  speak: true,
-};

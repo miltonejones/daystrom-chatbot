@@ -8,7 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Close } from "@mui/icons-material";
+import { Add, Close } from "@mui/icons-material";
 import ConversationList from "./ConversationList";
 
 function SideDrawer(props) {
@@ -55,7 +55,7 @@ function SideDrawer(props) {
             variant="outlined"
             size="small"
             onClick={() => chatbot.send("new chat")}
-            endIcon={<>➕</>}
+            startIcon={<Add />}
           >
             New Chat
           </Button>

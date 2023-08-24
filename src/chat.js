@@ -1,4 +1,4 @@
-import { getLocation } from "./util/getLocation";
+import { streamResponse } from "./util/streamResponse";
 
 const create = (q) => ({
   timestamp: new Date().getTime(),
@@ -9,15 +9,15 @@ const create = (q) => ({
 export const composure = {
   professional: "professional",
   sarcastic: "sarcastic",
-  rhyme: "in rhyme",
-  haiku: "in haiku",
-  limerick: "in limerick",
-  street: "street slang",
-  southern: "southern slang",
-  olde: "olde english",
-  gangster: "like a 40s gangster",
-  gothic: "dramatic gothic prose",
-  valley: "valley girl",
+  rhyme: "in rhyming every answer",
+  haiku: "giving haiku answers",
+  limerick: "answers in limerick",
+  street: "talks in street slang",
+  southern: "talks in southern slang",
+  olde: "talks in olde english",
+  gangster: "talks in like a 40s gangster",
+  gothic: "talks in dramatic gothic prose",
+  valley: "quite sassy",
 };
 
 export const attitudes = Object.values(composure);
@@ -29,7 +29,7 @@ const defineSys = (
   place
 ) => {
   const content = !file?.name
-    ? `Your answers should be ${attitude} but accurate and complete. `
+    ? `Daystrom is a factual chatbot that is also ${attitude}. `
     : `refer to this ${file.text}`;
   return {
     role: "system",
@@ -47,45 +47,6 @@ const curate = (chatlog) =>
     const { timestamp, ...rest } = log;
     return rest;
   });
-
-const streamResponse = async (response, fn) => {
-  // Read the response as a stream of data
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
-  let innerText = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      break;
-    }
-    // Massage and parse the chunk of data
-    const chunk = decoder.decode(value);
-    const lines = chunk.split("\n");
-    // console.log({
-    //   lines,
-    // });
-    const filteredLines = lines
-      .map((line) => line.replace(/data: /, "").trim()) // Remove the "data: " prefix
-      .filter((line) => line !== "" && line !== "[DONE]"); // Remove empty lines and "[DONE]"
-    // console.log({ filteredLines });
-    const parsedLines = filteredLines.map((line) => JSON.parse(line)); // Parse the JSON string
-
-    for (const parsedLine of parsedLines) {
-      const { choices } = parsedLine;
-      const { delta } = choices[0];
-      const { content } = delta;
-      // Update the UI with the new content
-      if (content) {
-        innerText += content;
-        fn && fn(innerText);
-        // console.log({ innerText });
-      }
-    }
-  }
-
-  return innerText;
-};
 
 /**
  * Generates text using OpenAI's GPT-3 API

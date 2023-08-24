@@ -1,13 +1,26 @@
-import React, { useState } from "react";
-import {
-  Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Box,
-} from "@mui/material";
+import React from "react";
+import { Typography, Box, Collapse } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import moment from "moment";
+import TinyButton from "./styled/TinyButton";
+import { groupHistory } from "./util/groupHistory";
+import GroupedConversations from "./components/GroupedHistoryTree";
+
+const Summary = ({ onClick, children }) => {
+  return (
+    <Box
+      sx={{
+        ml: 1,
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <Typography sx={{ cursor: "pointer" }} variant="subtitle2">
+        {children}
+      </Typography>
+      <TinyButton icon={ExpandMoreIcon} onClick={onClick} />
+    </Box>
+  );
+};
 
 const ConversationList = ({ chatbot }) => {
   const setChat = (payload) => {
@@ -16,41 +29,73 @@ const ConversationList = ({ chatbot }) => {
       payload,
     });
   };
-  const { payload, conversations: history } = chatbot;
+  const {
+    payload,
+    selectedDate,
+    selectedMonth,
+    conversations: history,
+  } = chatbot;
 
-  const groupedHistory = Object.values(history).reduce((acc, convo) => {
-    const date = moment(convo.mem[0].timestamp).format("MMMM YYYY");
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(convo);
-    return acc;
-  }, {});
+  const groupedHistory = groupHistory(history);
+
+  // return (
+  //   <GroupedConversations
+  //     {...chatbot}
+  //     setChat={setChat}
+  //     groupedHistory={groupedHistory}
+  //   />
+  // );
 
   return (
     <Box sx={{ m: 1 }}>
-      {Object.entries(groupedHistory).map(([date, convos], i) => (
-        <Accordion key={date} defaultExpanded={i === 0}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle2">{date}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <ul>
-              {convos
-                .filter((convo) => convo.guid !== payload.guid)
-                .map((convo) => (
-                  <li
-                    key={convo.guid}
-                    onClick={() => setChat(convo)}
-                    style={{ cursor: "pointer" }}
-                    className={!!convo.agent ? "attach" : "normal"}
-                  >
-                    {convo.title}
-                  </li>
-                ))}
-            </ul>
-          </AccordionDetails>
-        </Accordion>
+      {Object.entries(groupedHistory).map(([monthYear, dates], i) => (
+        <Box key={monthYear} defaultExpanded={i === 0}>
+          <Summary
+            onClick={() => {
+              chatbot.setState("selectedMonth", monthYear);
+            }}
+            expandIcon={<ExpandMoreIcon />}
+          >
+            {monthYear}{" "}
+          </Summary>
+          <Collapse
+            in={(i === 0 && !selectedMonth) || monthYear === selectedMonth}
+          >
+            {Object.entries(dates).map(([date, convos], k) => (
+              <Box sx={{ ml: 3 }} key={date}>
+                <Typography
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    chatbot.setState("selectedDate", date);
+                  }}
+                  variant="subtitle2"
+                >
+                  {date}
+                </Typography>
+                <Collapse
+                  in={(k === 0 && !selectedDate) || selectedDate === date}
+                >
+                  <ul>
+                    {convos
+                      .filter((convo) => convo.guid !== payload.guid)
+                      .map((convo) => (
+                        <li
+                          key={convo.guid}
+                          onClick={() => setChat(convo)}
+                          style={{ cursor: "pointer" }}
+                          className={!!convo.agent ? "attach" : "normal"}
+                        >
+                          {convo.title}
+                        </li>
+                      ))}
+                  </ul>
+                </Collapse>
+              </Box>
+            ))}
+          </Collapse>
+        </Box>
       ))}
     </Box>
   );

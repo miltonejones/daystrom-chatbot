@@ -141,7 +141,6 @@ const SettingsPopover = ({ items, chatbot }) => {
             size="small"
             value={lang}
             onChange={(e) => setLang(e.target.value)}
-            displayEmpty
             fullWidth
           >
             {langs.map((item, index) => (
@@ -161,7 +160,6 @@ const SettingsPopover = ({ items, chatbot }) => {
                 size="small"
                 value={attitude}
                 onChange={handleSelectChange}
-                displayEmpty
                 fullWidth
               >
                 {Object.keys(items).map((item, index) => (
@@ -180,6 +178,14 @@ const SettingsPopover = ({ items, chatbot }) => {
                 value={chatbot.autoOpen === "true"}
                 onChange={(e) => chatbot.setAutoOpen(e ? "true" : "false")}
               />
+            </Stack>
+
+            <Stack>
+              <Typography sx={{ mt: 1.5 }} variant="caption">
+                Machine state
+              </Typography>
+
+              {JSON.stringify(chatbot.state.value)}
             </Stack>
           </Flex>
         </Stack>

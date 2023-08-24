@@ -1,0 +1,182 @@
+import { assign } from "xstate";
+import { attitudes, create, defineSys } from "../../chat";
+
+export const defaultProps = {
+  lang: "en-US",
+  tokens: 512,
+  temp: 0.4,
+  attitude: attitudes[0],
+  mode: "voice",
+  autoOpen: "true",
+  speak: true,
+};
+
+export const chatActions = {
+  assignUserData: assign((_, event) => {
+    const props = Object.keys(defaultProps).reduce((out, key) => {
+      const value = localStorage.getItem(key);
+      if (value) out[key] = value;
+      return out;
+    }, {});
+
+    return {
+      userData: event.data,
+      ...props,
+    };
+  }),
+  assignTitle: assign((context, event) => {
+    return {
+      payload: {
+        ...context.payload,
+        title: event.title,
+      },
+    };
+  }),
+  assignProblem: assign((context, event) => {
+    return {
+      errorMessage: event.data.message,
+      stack: event.data.stack,
+    };
+  }),
+  resetPayload: assign((context, event) => {
+    const chatmem = context.chatmem.slice(0, event.index);
+    const rest = context.chatmem.slice(event.index + 1);
+    const question = chatmem.pop();
+    return {
+      chatmem,
+      prompt: question.content,
+      rest,
+    };
+  }),
+
+  reformPayload: assign((context, event) => {
+    const chatmem = context.chatmem.slice(0, event.index);
+    const rest = context.chatmem.slice(event.index + 2);
+    return {
+      chatmem,
+      prompt: event.prompt,
+      rest,
+    };
+  }),
+
+  assignAsstTitle: assign(() => ({
+    transcript: "",
+    question:
+      sarcasticQuestions[Math.floor(Math.random() * sarcasticQuestions.length)],
+  })),
+
+  assignTranscript: assign((_, event) => ({
+    transcript: event.text,
+  })),
+
+  assignPrompt: assign((context, event) => ({
+    prompt: context.transcript,
+  })),
+
+  setProp: assign((_, event) => ({
+    [event.name]: event.value,
+  })),
+
+  removeChat: assign((context, event) => {
+    const result = {
+      chatmem: [],
+      listOpen: true,
+      contentText: "",
+      payload: {},
+      conversations: Object.keys(context.conversations)
+        .filter((key) => key !== event.id)
+        .reduce((out, key) => {
+          out[key] = context.conversations[key];
+          return out;
+        }, {}),
+    };
+    return result;
+  }),
+
+  assignName: assign((context, event) => ({
+    payload: {
+      ...context.payload,
+      title: event.name,
+    },
+    conversations: {
+      ...context.conversations,
+      [context.payload.guid]: {
+        ...context.conversations[context.payload.guid],
+        title: event.name,
+      },
+    },
+  })),
+
+  clearSession: assign((_, event) => ({
+    listOpen: false,
+    chatmem: [],
+    payload: {},
+    contentText: "",
+  })),
+  assignConversations: assign((_, event) => ({
+    conversations: event.data,
+  })),
+  assignConversation: assign((_, event) => ({
+    payload: event.payload,
+    chatmem: event.payload.mem,
+    contentText: event.payload.agent,
+    listOpen: false,
+  })),
+
+  assignStreamText: assign((_, event) => {
+    return {
+      streamText: event.text,
+    };
+  }),
+
+  assignPayload: assign((_, event) => {
+    return {
+      ...event.data.result,
+    };
+  }),
+
+  assignResponse: assign((context, event) => {
+    const res = event.data;
+    const answer = res.choices[0].message;
+    const loggedAnswer = { ...answer, timestamp: new Date().getTime() };
+    const rest = context.rest || [];
+
+    return {
+      streamText: null,
+      chatmem: [...context.chatmem, loggedAnswer, ...rest],
+      voiceText: answer.content,
+      rest: [],
+    };
+  }),
+
+  appendPrompt: assign((context, event) => {
+    const chat = create(context.prompt);
+    const query = [
+      defineSys(
+        context.contentText,
+        context.attitude,
+        context.lang,
+        context.userData
+      ),
+      ...context.chatmem,
+      chat,
+    ];
+
+    return {
+      prompt: "",
+      query,
+      chat,
+      chatmem: [...context.chatmem, chat],
+    };
+  }),
+};
+const sarcasticQuestions = [
+  "What do you want, genius?",
+  "Oh, it's you again. What?",
+  "Surprise, surprise! What now?",
+  "Spit it out!",
+  "What is it this time?",
+  "What'll it be?",
+  "Lay it on me.",
+  "What's your request?",
+];

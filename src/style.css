@@ -52,6 +52,7 @@ li.attach:before {
   font-style: normal;
 }
 
+.clip:before,
 li.attach:after {
   content: "📎";
   margin-right: 4px;

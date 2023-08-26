@@ -9,6 +9,7 @@ import { getLocation } from "../util/getLocation";
 import dynamoStorage from "./DynamoStorage";
 import useClipboard from "./useClipboard";
 import { defaultProps } from "../machines/actions/chatActions";
+import { getAddressFromLatLng } from "../util/getAddressFromLatLng";
 const COOKIE_NAME = "chat-conv-x";
 
 export const useChatMachine = () => {
@@ -40,7 +41,10 @@ export const useChatMachine = () => {
       interfaceLoaded: () => {
         attachClicks();
       },
-
+      getGoogleLocation: async (context) => {
+        // alert(JSON.stringify(context.userData));
+        return await getAddressFromLatLng(context.userData);
+      },
       askGPT: async (context) => {
         // Extract relevant data from context.
         const { query, tokens, temp } = context;

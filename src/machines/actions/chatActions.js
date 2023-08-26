@@ -149,6 +149,13 @@ export const chatActions = {
     };
   }),
 
+  assignLocationDetail: assign((_, event) => {
+    // alert(JSON.stringify(event.data));
+    return {
+      userDetail: event.data,
+    };
+  }),
+
   appendPrompt: assign((context, event) => {
     const chat = create(context.prompt);
     const query = [
@@ -156,7 +163,8 @@ export const chatActions = {
         context.contentText,
         context.attitude,
         context.lang,
-        context.userData
+        context.userData,
+        context.userDetail
       ),
       ...context.chatmem,
       chat,

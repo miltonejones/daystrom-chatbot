@@ -26,18 +26,26 @@ const defineSys = (
   file,
   attitude = "sarcastic and disgruntled",
   lang,
-  place
+  place,
+  detail
 ) => {
   const content = !file?.name
-    ? `Daystrom is a factual chatbot that is also ${attitude}. `
+    ? `Daystrom is a factual chatbot that is also ${attitude}. Assume that the current location is ${JSON.stringify(
+        place
+      )} ${JSON.stringify(detail)}.
+      Important: if question asks for a specific location, 
+        include a Coordinates object in this format in the answer
+        interface Coordinates {
+          longitude: number;
+          latitude: number;
+        }
+         `
     : `refer to this ${file.text}`;
   return {
     role: "system",
     content:
       content +
-      ` language setting is ${lang}, current location is ${JSON.stringify(
-        place
-      )}. current time is ${new Date().toString()}`,
+      ` language setting is ${lang}, current time is ${new Date().toString()}`,
     timestamp: new Date().getTime(),
   };
 };

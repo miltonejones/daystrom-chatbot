@@ -3,7 +3,6 @@ import { Typography, Box, Collapse } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TinyButton from "./styled/TinyButton";
 import { groupHistory } from "./util/groupHistory";
-import GroupedConversations from "./components/GroupedHistoryTree";
 
 const Summary = ({ onClick, children }) => {
   return (
@@ -37,14 +36,6 @@ const ConversationList = ({ chatbot }) => {
   } = chatbot;
 
   const groupedHistory = groupHistory(history);
-
-  // return (
-  //   <GroupedConversations
-  //     {...chatbot}
-  //     setChat={setChat}
-  //     groupedHistory={groupedHistory}
-  //   />
-  // );
 
   return (
     <Box sx={{ m: 1 }}>

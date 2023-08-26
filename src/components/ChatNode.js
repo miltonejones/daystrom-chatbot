@@ -6,6 +6,24 @@ import TimeStamp from "./TimeStamp";
 import { Close, CopyAll, EditNote, Sync } from "@mui/icons-material";
 import ChatButton from "./ChatButton";
 import { HomepageTextField } from "../styled/HomepageTextField";
+import CurrentLocationMap from "./CurrentLocationMap";
+
+function extractLatLong(str) {
+  const regex = /{[^}]+}/; // /{[\s\S]+}/;
+
+  const match = str.match(regex);
+  if (match) {
+    // console.log({ match });
+    try {
+      const result = JSON.parse(match[0]);
+      return result;
+    } catch (e) {
+      // alert(match[0]);
+      // console.log({ error: match });
+    }
+  }
+  return null;
+}
 
 function ChatNode({ retry, rephrase, role, content, index, timestamp }) {
   const [isEditing, setIsEditing] = React.useState(false);
@@ -16,6 +34,8 @@ function ChatNode({ retry, rephrase, role, content, index, timestamp }) {
     setIsEditing(false);
   };
   const { copy, copied } = useClipboard();
+  const gps = extractLatLong(content);
+
   return (
     <Box
       sx={{
@@ -59,7 +79,11 @@ function ChatNode({ retry, rephrase, role, content, index, timestamp }) {
               />
             </form>
           ) : (
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <>
+              {" "}
+              <ReactMarkdown>{content}</ReactMarkdown>
+              {!!gps && <CurrentLocationMap {...gps} />}
+            </>
           )}
           {role !== "user" && !!index && (
             <>

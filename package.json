@@ -11,9 +11,11 @@
     "@types/react": "^17.0.0 || ^18.0.0",
     "@xstate/react": "^3.2.2",
     "aws-sdk": "^2.1430.0",
+    "leaflet": "^1.9.4",
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-leaflet": "^4.2.1",
     "react-markdown": "^8.0.7",
     "xstate": "^4.38.2"
   },

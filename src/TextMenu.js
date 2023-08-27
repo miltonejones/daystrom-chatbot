@@ -1,19 +1,10 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Menu,
-  MenuItem,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-  Typography,
-  Stack,
-} from "@mui/material";
+import { MenuItem, Typography, Stack } from "@mui/material";
 import TinyButton from "./styled/TinyButton";
 import { ExpandMore } from "@mui/icons-material";
+import MobileMenu from "./styled/MobileMenu";
+import DeleteDialog from "./components/DeleteDialog";
+import RenameDialog from "./components/RenameDialog";
 
 function TextMenu({ active, children: text, onChange, onDelete, onCreate }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -84,7 +75,7 @@ function TextMenu({ active, children: text, onChange, onDelete, onCreate }) {
         </Typography>
       </Stack>
 
-      <Menu
+      <MobileMenu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
@@ -92,45 +83,21 @@ function TextMenu({ active, children: text, onChange, onDelete, onCreate }) {
         <MenuItem onClick={handleRenameClick}>Rename conversation</MenuItem>
         <MenuItem onClick={handleDeleteClick}>Delete conversation</MenuItem>
         <MenuItem onClick={handleCreateClick}>New chat</MenuItem>
-      </Menu>
+      </MobileMenu>
 
-      <Dialog open={openModal} onClose={handleModalClose}>
-        <DialogContent>
-          <DialogContentText>Please enter a new name</DialogContentText>
-          <TextField
-            autoFocus
-            size="small"
-            margin="dense"
-            label="Name"
-            fullWidth
-            value={tempName}
-            onChange={(e) => setTempName(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleModalClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleModalAccept} variant="contained">
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <RenameDialog
+        open={openModal}
+        onClose={handleModalClose}
+        onAccept={handleModalAccept}
+        tempName={tempName}
+        setTempName={setTempName}
+      />
 
-      <Dialog open={openConfirm} onClose={handleConfirmClose}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleConfirmClose}>Cancel</Button>
-          <Button onClick={handleConfirmDelete} color="error">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteDialog
+        open={openConfirm}
+        onClose={handleConfirmClose}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }

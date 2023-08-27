@@ -18,7 +18,7 @@ function AttachmentButton({ fileLoaded, contentText, ...props }) {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.size <= 3072) {
+    if (file && file.size <= 113072) {
       const reader = new FileReader();
       reader.onload = (e) => {
         fileLoaded({

@@ -13,7 +13,7 @@ const CurrentLocationMap = ({
     <>
       <MapContainer
         center={position}
-        zoom={13}
+        zoom={15}
         style={{ height: `${mapWidth}px`, width: `${mapWidth}px` }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

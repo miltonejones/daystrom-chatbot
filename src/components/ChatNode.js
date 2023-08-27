@@ -1,9 +1,9 @@
 import React from "react";
-import { Avatar, Box, Card, TextField } from "@mui/material";
+import { Avatar, Box, Card } from "@mui/material";
 import useClipboard from "../hooks/useClipboard";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import TimeStamp from "./TimeStamp";
-import { Close, CopyAll, EditNote, Sync } from "@mui/icons-material";
+import { Close, CopyAll, EditNote, Person, Sync } from "@mui/icons-material";
 import ChatButton from "./ChatButton";
 import { HomepageTextField } from "../styled/HomepageTextField";
 import CurrentLocationMap from "./CurrentLocationMap";
@@ -27,7 +27,15 @@ function extractLatLong(str) {
   return null;
 }
 
-function ChatNode({ retry, rephrase, role, content: stuff, index, timestamp }) {
+function ChatNode({
+  retry,
+  rephrase,
+  role,
+  content: stuff,
+  index,
+  timestamp,
+  loggedin,
+}) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [innerText, setInnerText] = React.useState();
   const handleSubmit = (event) => {
@@ -52,11 +60,7 @@ function ChatNode({ retry, rephrase, role, content: stuff, index, timestamp }) {
         justifyContent: role === "user" ? "flex-end" : "flex-start",
       }}
     >
-      {role !== "user" && (
-        <Avatar src="./Chat.png" alt="id" sizes="small">
-          MJ
-        </Avatar>
-      )}
+      {role !== "user" && <Avatar src="./Chat.png" alt="id" sizes="small" />}
 
       <Box>
         <Card
@@ -125,7 +129,9 @@ function ChatNode({ retry, rephrase, role, content: stuff, index, timestamp }) {
         />
       </Box>
 
-      {role === "user" && <Avatar sizes="small">MJ</Avatar>}
+      {role === "user" && (
+        <Avatar sizes="small"> {loggedin ? "MJ" : <Person />}</Avatar>
+      )}
     </Box>
   );
 }

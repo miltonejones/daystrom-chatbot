@@ -4,8 +4,9 @@ import { createMachine } from "xstate";
 
 export const chatMachine = createMachine(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5QBECGBPWAXATgewFsACAYwAtUsAjPLAOgEkA7ASyxdQBsjtKwBiANoAGALqJQABzyw2LPEwkgAHogC0ARg0AmABx0ALLoPaArBoDswgGy7jBgDQh0iSwGY6u82+sXrwg2sATgMAX1CnNExcQlIKalo6FlZ2LhYALzAiMCYoZIEIBTAkpgA3PABrYuTyqrUsAzBlACsRcSQQaVl2BSVVBDULN206C203NxNtM38giycXBF8DTz8-M3WNIOtwyIxsfGJyShp6ZLk0zOzc-LoYLCIAV1gwHCJOPBJKeSZ+QqZqmVKsUogdYscEmcUhxOBksjk8gC7mAHs9Xu9Pt8FAgapiekw2m0lF05L0Ov1NBo3Bo6EFxpMhm4LBYqQtEKZqZ4fMINKYgqYrMzdiBQTEjvFTiULrCrgjbvcMV98UQICjUCxOLA-kUSrUQfsxXETolzqkZfCbkiFR8lT8VWqNbAcUDbQpCWJiTJSYpyeotGM6MJdHMZtotgYNI5nIhdH5adoDOZI1tTAFhaLDkbIXRUJJJDwsKgcFghB6OiT8X11IERm4gvytCY7CEE2yEEFhBY6NZrBprAZhondDyNOmDZmIZLc-neMWhBp2lIvZXfQNTMZu0O7L3qZ35tGEJMtKNtHvTHzeRZTGPohOJYkAIIkEhgSTsXJEcosF9EZKSR4ll8TAvpwRLlsuPxVks+hXiEpjTMGA7WBMbZaFsgYGHMWgTPBPg3mC4rGvQT4vm+yRQJ+eDflkf4Afw7AEGAeAAWBS7dJBq7DEEdC8rywgBLolhmKh-Y0hYJgDqeui+MOOwRCK47gvexHPq+74UV+P60fQs4PJpWQ4GAJB4FA0IKNqAKsZ0EFkqA-RaNMgZuOuzJBFSSZuKhp5dnyzIBB2gq6No+GGpOj6qWRH76b+TD-jphbFpR1FEIZxmmd6FlgIIC6euxtkqK4OjcRowjbNoQzCGGzK6KhYw0vyyE2HWVLTCFd5EXQJFqeRSVabFAF0LpvUGUZJlmb8aJvIWnAVORVkVhxdmINYCaGGYVIGDYaEWDVB4lQOowaHYWg8jYwjOW1SkdV1kUaVRfVxXQk2kKgwFgJwmW6sCX11No1gVFAqDzTZPpLQg0meAm56lVe9KRqh64eDygSdsOOjGBYl2EdmAAK+AvrAsBZkQkiHG+nV5jkEBEAAjo8cDKlgeBEGQLDYHgODoKWi7WXloMFQg0z1jx-hbJGtgcleqFnRhWwWEEdYw8MWNZpKeOfHARMQiTZP0AAylTOuEG+RBM0QADiOMACqfbiVQ-WAgxWL4wN81BkwHUMvYGAOCtDFLe3nV21LmKesy8sr8kZlduP45rxOk8b+uG4nBAm2bls2-8gJ6g7Ts2BY2U8wt+X9HWtieOuQsckExieYHTJ0CHOhnW5HLBVHinY2rceEwnut0AbTDU6n6fM5n-CvPgOB0JInCUAAZhzBB535Ltlmx3pQX9kx0KYO6CZtkYoXtf3CIYzKJt4bilUdKthfQ6sE1r8RG2nyfD2-Y8W9b-AHGAqBiCGVgNIJgLxXZb1XHoFaa0VpDCCtSSY1g2y6DrIYfilgvDaH5NJDuexbwxx7hrPu2tR70DIdkHA09+CpTwKUV4ECVxg2mOMHiAoGxuCwWGLypVRjbHXCEGSwQ5L4IIqrRIT946kIHhQqeHN+BARAowxaAswxUjWptcw+87DDFMKhLwHhUyniZPWIw7h77KToAAd3VOpIgS83jaX4GiYayjS7sksDxcYIRmRMiEsgvaolRgSWGEGGSQYLEdRsXID8DiYpxT-iiAsfBPxcHpm4-m-RpicNGEyFaQUhgDmcm2SYdgeJ9k7PBcqEZyqROzNEuxcSnGoFgBUDJUE5bnyOlMPstcDDyyCCJFk8ZNo+HgZg3QdTJQNJ6k0-qJZDJMEAVlDevNIHMIFKYJuyE6yYSsIEXwbYNhdnEh2WMEwTAChEQpAh3dEgzNiRzeJdFDIEDoSs4uINt7YJpJw4IbkAg+B9toI5K0tm9mCIEDkPhgxTPubY2ZTynEAisVmdpq5bArAmOGMw-F5YrX0agpuZzeIwrGG4OF9AHkUTmQk44uQsjGTKK8WAWICSrJLpk1w-gm7nWpIfI6TJxJHK2PoY+sZrD7z7O5Sl1iEWPMcfMmhKJOborBryP6gY259kKWMXaixeQ9kDMGbYpVOwRjwp3W54iqXyppUipVhlJBkBwC0j5uV1kC3cOfJkWjqSSv4iCvaQwRjjACFsXwUMqSyupfYh1j1JCoBcXEx4kgIB8H4MoXgWBiioAXjmnAAAKVMwgACU-Bo53NtTE+1iqE1JpeHGt4qb005rVaozVRgtpHWTLYYwoKIb9MCDoFk+8zBhCtWIh+cqa1NuefQFtKTtawmwLbIE9s7aOxps0Ngyh239EEls1Mpgin70lWMPRB4b7YPKVoAUfYd6jknaFSxsbaUDUXTm4mK6SxyJnnPRey887bt3fuxA0wxL+TOj7GGUZFgh3BW5fsQYIxQonaIl9US7Vzu0nQQyqBqZ-uVcZehOAwOHg3D2bRCteS1wLiUyw1haRHWmKMvwdgY3YfffQfDhGqHyMUe9cjWxWHDHsOe+s50NAlJvl2PQ0la7OWHOYWVidn7E2AaAl4yIHhcG4Ey0jrL8Ramzg7POTMwACnI0C8+x7+KVWcr0y9iw1FMZrtg4cRSvCqd7i-SgKU4BaeKAqPTpAFCGbZSZnUm7zN4Es4XHK4E3acX+U3RMdJBGhwDi56kKxUECisO5aFPniF+YeJphQ2mQucH0+FllkXJ78f-fPLADiV6bvqHFqzHKvmrkTPxPesZxZwXKkGlzLIaTBjDArKSt9rmVptbPXzGnAuVeKJ+rIib0AfAI2u3OC3p1qaka-CrYD1tppSVtnbEBnTlFdOy0Q5HsEmD3h2HQww9Dnjg+BzhoaL1-QQcYYQ15n3tWzEdkhJ3VtnboCQfDX6rt4F26ZmLHX0AEHQLYazTJz6xmPTtBqJ6jknq7E2QItdFOsZK+p7Wp3tNw4AQjjA13EkPERwR02bBODuqS56sucwVi1x7A5kNvrQUdjoH9NYzkFbnup8d-zdPiiSBZWzNnzOkcQD299NHwgsC6CoE96k3EIxDGhQOHaxP96GC8L2c355Mag8IYkCHZWAsgLW7PVX2ASYa923+2eLW2t53QHrg31mHNeMPqey8RygorDOqg8YyFxKVXl5DxX0PtPs749Q2hpGnsmFs8DsYm0AgCSOSEbiXEQiVR0A+kHGGweSldytj3MPeOUOoYJ0CPXktg19UjPQPzKo8lsCUzsNJzqCVrgKIMQr09u6V3hgBuf5H54YX3vniBgUjEEkgo6EKUygtPJ4Ywp5NGuYpU7qtsPudFmJi8QmPxuYeqYQLHsNIS07KZEORMCNkJRg+RToTU-BfBZUSB783htYn9ZBzIi438VED1mQuRxhBJ-BJZBk9p94PArxbcT09kJtZUQEAEKgiBXpYArFXhtcN111HZmgNB0AsB0ByMfYclYwgo9BSkcEEZPEfBfB71UxexOxVMG0sg4kwAF4F4jISws1Cwc0cx81XhC0Sp+Jy0DtLFE1k0nlJDpCSAsBhMi9uwJVTcqQ4E2xtgfIT0bAQwBxhxHd5ImA8BVR4AOgNCiJED3EBh0Z9AIVa4gpJU6RYw2w1B+QuRfsHcJgExJVZVmBpRkkc1PCuVvCExz4-C7A-o+Q9B9xFg1B9AJg-kaxtFew74b9FtTQYQ4RrhEQwAkioJNAwwE85h4IewjAsi48VgLcOQKkT1pJ+lZUKjLgLQaidMngXg3gbQ2U6jVxKQjUYYWj+wvA6Q2wIx9A-YT071IxxgBwBjoQhjqj5QklJjlRVRCxHRpiwZKQgxPBEwqozdTxnNlprdNoxh-AhgkM5hZVpxkliwLiBZQjPEOxfA+xgwrxLAsDFhcEbcL1OwTEdBG8bkp1LEbo7FoptI-iKRYwm4OCW4EFuj9VEAOxuIww7BYwdppI7dZUUSeo0T5lBoEo9J7oRo0pxoMT2RADcVSpoZ+lKpvsEAtA6RPB+wXjWiMYET3DsxqSoomT50npxiXo3pOA2SBg0FOEdpcTxh8SvJAg0tpIgpJ99pJkyjp1JEM82ddZlTeQIYjoBdkJIw5htg2wwTaRA1LB1xwwhRjTLFTS3cyEKYVdP46YGY7QzZWZ2ZOZLTkIVgbTxI7S9lHTA5VoWQbBBJmx+QT1ZUfT+4k5B4U5dZTZx5rZlS-ojpJcvAz1p8gppYkySpbAjoTUvtMzltpEczZEmtizKomMDFU9BwkMvIiUEwWR-AEEAd0NETMN6kuN40AJLTzpPAQgNpJh8d64XMbAmNxUypdEdlONZ1uNZ4xC50NtLTzB5yLUBx+sBQVzwMfZ9AORfArBYwExLkdzGlpyF0Lsv1l01djytlU9LkToJhBRK8UCik6QR1gcmQXzEU60BpeNFhN5397IgotkSSdkFZjAFYJ9jwgw-Ax0nzzyoKFVZTO8-1izrc-k9BtgIwSjJUZNOxXsYVHydw9BF828gtizD1aQL0OQgpEIrz+T6x9AwkhysEfABRWLacs9gsklQsDN6tjNlSkIaRRVJVnJhFgwRVIxJdJVyp3T4I+wJKod29tMNtfdttNcOLACQxzxfs+Kjkgwj0KTqp7M0wvSOpW9JLjLigGdLs-cIBlScctkh0+jRJYZiczBuw687cLU6w8Fxzm8XdmyjKgsvccBZAfcc9iyOwRhzpdK6wJgOwmRidexJczB95zAgivAxyJSW8krM8vL9zzKOdSLedELwMQh9ApdulLAWR5Y+TnsRhxIrktBew+jr8m9ndyE6ryspKV9mr2zWqkCd8YNJdJNzBhwnzpMr0toeJKpz8AhyoqMICoDH9NYVFOUoJVKbirwxhAUfZljg0eRRghtergdkI4qarEgSDUAyCKCqCcBFKUZjCjxhxOFzpHj+Ty8m5xhMi-o3IfZHcJrb8tDG0JCpCZDZy4xa8TBnIS9UyLDhhAxbABI1F1x4JwhwggA */
+    /** @xstate-layout N4IgpgJg5mDOIC5QBECGBPWAXATgewFsACAYwAtUsAjPLAYlgEsoA7IxlgbQAYBdRUAAc8TLIzwsBIAB6IAjACYA7AoB03OQFYALFu0AObgGYAnJoUAaEOkQBaI6qVH927UpP6l3fSe2a5AL4BVmiYuISkFNS0DMxseACuWDz8SCDCouKSabIItnLc3JqOCnJuJgpGhZoAbEZWNgheqtoKbRVGcp0KvgpBIRjY+MTklDRYqgCSLIxiqAA2RNiUYHQpUhmzWVK5+Qq1qvqGRprGXtrcNdoN8jUmh84eZqV+Pkb9IKFDEaPRExxbBaMABeYCIYBYUA4YFUMCwRASsDAOCI8zwJEoWToEAkMI4ADc8ABrGFfcIjKLjVQAubzEFgiFQlgwuEIpEotEYsQSBAE9GYiQpdZpTbc7KgXZyMpyVQKNw1JTuGqaFQmG4IHTFTwmIymOX6UwmJQfMnDSJjWjUma0+ngyHQ2FgeGcgVsCBO1CMeawbG4q2EkmqU0-SmWmmMIGgu1MllO1H8sVEd1YT3e3ksQlcrJCvgbERbCQ7OxKGrcVQ67x+DSqhXq5UypwluqnGp3Uwmwbk81-VSoQSCJYpnD0YVCfNiot5VxKRytbhylVGSondVdVqyowqU5dTSbjthM2-Kl9gfLYdrOSpMeZQs5Oy6bSqIzKkxdbhKTyVORKdUvLUfnoPBqfZfH3b4KQtCYAEESBIMBBDESEiEJRg4PYFhBCSOgMRYOD5lHdJx22O8EBqfRHE0XxzAUHxtGfXVVyle5uG0I0pV1cxnzArsj0tGC4IQjgoGQvBULBDhMPoMQCDARJklzEUiNvCVECXe4tC0QoDG-fZVyuBtWjohRvAVQwam4w9Q2g2D4MQ4SULQiSklUM94QcsEcDAEg8FYAsWF9ZkCNFYiVIQKU2nUE5PHcHd2NXYyZ0oxUWJMd9330Ppgk+TtLMg1R+NsoSRLE9DJJcoc3NEtDPO83yxQCsBOEvPMb3FGR5EUdTuBMYCnHnb8P1XFQZTMOpLlMLo2gskM8oKwSkPc0rnNc4rqq8nzrSxRFkSIFN5iJISgqUtrcmAx9Wn8IwLhqKVv30VcWIcJQ5COKUNEuYxNGmiCezmuzVvEjDnO2lEcLwhr-WJPEMyh2wFBqIkoFQI7WsnfQakOBdTiNTjOmuax5E0A11DKUsPw0Gi3G+7sqQABXwODYFgbsiEEYYEPy-sIQgIgAEcEjgRMsDwIgyEYbA8BwdA1gU68-MnZcHDlZcLkqI4XHVDwZU3I5CiKK7lBManeImen0TgZnflZ9mJgAZW563CAQ3aRYAcVpgAVCG+UDH2wFsZKFRR+WSKuujHGfMo6J1RtNAezcnw04zS1fXdMoGA8Zp7M3GctqJHYIDn7ZYHm2ad+FhaId2vZxZlId9mGSQDrwg+axTUdDnryP0In2l3Dw6PjmdOn8ZPuq0Jdjas1Qc4tlmy8Lu2HYX53K+ruhkXwHBVEEeZKAAM0lgh6-9wOlGDicSMp8jjPSl7Wzo2p4uaRt0aNZxzEVKe8tnpn55t1QxdS42xdlXT2DBcBgFQMQTysBhAsCRBfEK7UEA0R6qoU4Lg5B1A-AYOOBMmilgjncEwr4KgsW6t-bODM55WxXhMeh4IcBbzoDVPA+JkRIOUigtoKpZQXG6qYC4KpsGMU6KoLoV0ChviXLoKhdMaF-zoQAxhm9JbYVQLhMA+FZaEQ7qFUoWgJFSOTj4BUlgCEvSNOWOoBpWK+DfvoeRloADunp-qHxRE5eg20AZcJOogfwM5FBCMVJuHSNQ9K6FnHKJcJlyZOKysGH6VI3FbCQp4pa9AkTwmWFgME+IFgC38QrNWEcSw0WUFdDi6orpHAkdg981ElC6GUM4iYaSPGSyyXQVAsAiQlJInIDwZZXDaDqLY+GD9VyvjLK2Hw98nBygqO01QnSiqZO8awiE0DGq6OCtw3I+wlDFHokIo0LFWw-gIccmcLTUqeF1BdEsqz1kZO6VszyBB2F7KvHokOBiejazfrMuiVxWi-mAsUG6dxxm7mfD4V57iNkfKBvQZkLjuyDNCrYXwqhlR3BLK0ZQ6NXC-k3OdHQig-DPTbEi9JwlNlouwhQSEYJvIZmRLAV02KUGNKfMYTo+hpQGkVPjRopQPASLop4Al2Cdz0q6V45lnlcDoF5bkUm9wXyVEokUG6vhVw+BnC4XUsLvw6kUIqlFyrJLbMEGQHAfTfktQBXylpcyTi1FwaZImQ1FRPmfB4ZwBoDbmSSTlLOqTkXvNtc5QQqBfGZISIICAKw6DSDyTCVA+98k4AABSnG4AASjoMkmmriY2MtRWVBNSbukprTfkjViA2gYwMJcKUwrdBkQ1jcsi7aWk3WUFoKF2hrWxqyaoRtKwWZ0mwN7Ru0MAz+15gAK1mNIFtCBhXFFODoDirYVS6QIVUHoDSpQiOAnUQIEbM4pMrQyogTKyozvyXO8W9A1Hb13gfI+J9bDrs3dutoDYUofVcN1FptStDQtfFcSspMdATurXGiYnlUA82-ds7yHCcDbucI+I9ZFLWUTMtcxonQSzlhem0C4m5e0oefTW5yGGsPMPUWDbR27hmVCfJTOF7hUqdFqVUGcNFHFRSKLejO4EK0MMUXnSgRBYHwKRI6eECxFgcrw9ysUPpa7LqhgB4WYAVQEYQxgooetdXYLML+KUGN+49EMHRD+qyy65xZqpiQ6nWRadIBIXTroDN+j9iZvAZnz5tzlpfUKQb7hXUoj0OFigTnkrKA8FUXgdzwo84p7zcA1Oxk0-MbTQWuUhY3hxn9e8sCeOPn7WwpnzP7OOpOKsZYibPXGVRZQFiJXPRlD4SVcTDDwfy+bJR+cfMIJhG+sECb0Bokw4uldQZI0PoU1NpT8JZvqYW6zDAK2IDpkzDyvgIHegYNSiEtoPcdDkoyrKLc8MMqEaKJNrzVt9swhIBh99S2TtreM019ABB0BkQI5uMsnh90flGo9m5OgZytBcHcHwBo6NfdoTNorvm-sA8W8dvAq2clHeW6TnmYgsDzBde3N1uRTAtPLOjUslQlmbnwRKu4ZZ4YlicJRZ8KocfTeU79neXLP0U+B4Zk+AH0DcCwPoKgIHOj3F0ILp5OtfyaAOHgm68K-Ai7vXJk2O8Cs-fx3NyXOAmDYBl1T6rW8d51YawrpXKuCP9XUN1OUrSTksV-IqU58M0vdaWeG2TPFp6edx+L636mgdU6YSwtheGQNzis8egRFwDC-l8IlwCqtFDYP2KL3bKnE8wjY6nzjmi8IEZOQ4ecGVZnGWwfdU974ZTGGFR4FU3hNzGlNzHvKcexd7er6oWv2H0+cLa-olBrgIrCqujddG8r7P9uMocFwxlhGGLqKskgdPUCg3zkiJmWJt35HfE9W+2DWKUTVJYo09wdAuc3O0FLqy4FQKJCIE0VgBcWRBBwbhXVsDXTkHQCwHVUX0Z0QCrAcAuBaToy0GDVXGxgkWelHg71OHL1H1yh7DrSRGYxRDAH3n3i8noEzRTHyV7FzWRHzQKEKFLXLXN1ILBEyUoOoJIHkj+QOQCTCizzIiJW-C6F6k1gVAwR0EuCNFiUMBH2j2IKpDRCZHIIIA0S0R0UEPaxIkoi1E13cB7juHVAMESx0AuT1l3GFVWXUI4E0JcjIDwBcRtS0PUPQh4zTis11DuxLEUC70oz8AaX8D0Coxehk2ynvXk1UAcLYHd1gBcLcNjS0PJyzWQiKXp1i2QU1WFTUE8DKH3VSnMBel-G6n411BilqAyhCXsJ8kcPd3IC8gOiQn+0gAhFpFCzrnCw4OnniKcOaJIFaOEnaPdBYC6LOwTGzEuwQLixQVOCVm8DbURz6go1UkUCs1IUuSuR1Cj2iLN36IaISP-SGJGNIE8nGK6Od0lldz-RwGPj6LygGKaLIBaKKjGM6IjDTD5CzEFFmL0KX01R6AKI8DlGMC1R1HMNYnLD1yhQKAYyOHqI0PdxeNTEgG2TVW8O8HxUH0ERekEW50CXXFYLomemeBUFWV-kr3oQt3Ljr23iSNcKKmwwgAjFYBEGyP+XmKOVuj30MQyno011XANhaFiWcHJi0ESRUKjUtGpP-nLjpMXgZNUFwHZNWDVNQCZCgBAzkJaF0CKGSyqG8CwKKHxR8F6FShMKJipMt3zlpNURq1VJwHVPANJE21iPlOUUVMdJd01JgCmL+K4ABNdR5NbX9wFVMGfHBScFf0aC0HPXgzcEKNYnvltJ2wVMXiVOdm-VVMoFp1WDl16I9PNy9PtJURAVzPoILMDIu14B4z6kih7nODZyNHFUJnnAFV3AF1IXMCuCCCyhYDwHdHgDSCeL+FDNyLsDKGFVlFumfDDwFPVFxRlDVm3FcB6lsOlIOLHx7GmEBEWCzUnMOWnLcznPYmvVLzKNPUcGMHhh6nBOGUuG3PHKpHDEjAZHtGZGPOEL2GaE3MtSqDJLJW70Sg0ilFVnnD8H2NfLDE2g-OjAdFZBBnjCDJ-MnD2AigAs6CAopXbIQFMGKA0H3W-GfBOWAlWXfLpCjEZCQrjBdETGTFTFHJyJPLyAKFSkcB8H8AmUuDcAG0QFbDUAugyg-AQzaHeCINlImBPEHHPywHQpIlsG0nxXnHhlYlbDSyKDrCXGMSJiuGUGMFVlWT+iKkWm8UUpxU8CfE8HyOWJOCFU1gqNKFssCOAn2BgpLOnlMoWiqkBjKhWkWjYTqmQSEMnFqCViLTMFODcCgsYgqEOHBXfAfhcBORMpsnmnsj8qnRQq43mEspQXsES1cuMne13GvPjLlAxjqTIgSjegMHTO+3LPLgKs1VqDUAVFmWkwygXDrCcA3DIiXFLCf2cEavj3hFpKgi5hLj5gFmwCyFATFglillatuAKHxRimqFo16oIV8AxhYkD32HMDkSkq2xnjtOU1pKAQLlXjdk9lWtQWVDUDIq8B7l8AkM1nGXUDcAIL1zlCiNgtNguomorPpO-QeuwWaFMB7iKF0B6j2viilDFMfm-yjJ6CYxfSSAhuMEOHeuqSrEXHKNbGlWZ2GVQIotOtiLeVQynS4PIIRFTRWAhv8Fxt0Hxvh3qBuVcHIl3AVFepUBXy+kpvN2pvpu8WnUZvfStnnQUoZzDLCj11nBYn2DeiqPfALwDTcwqC0u7IxpY3QygQgEaFYuENo2KBcrqCjJcChO7yRu8BLHav9zonHWFunlFsxoNswwZIeo8psuAjMR7UcyJIIrExuwRU-BuiXBfK8vH2BqrzgQJx9t3XLC3FsLQUHjfylXiQpSepUEkplLOon0rwl38zK0C05TtxCwerBRlGGXRl3FqC7jjNbQgtlFzqJgTOwQr0KwTpt0O2T0wyTrqBTqOucHTs5olW8D3TZ0VEMD1hdoLtiKLp7uK1UHaNnQHogAeph2KDcAMCuH0hOQEtQXMGhX6kNzZr1G7qt17qTylwd03p9tSjUDvObx1FMDOF1xullCOvrAqCOGQ1dtjozJvtXs3u9rlqnNQQcTbueiwUVAtXwpSzUBaRVBunlVJXzp3NUMtGXtAYJxn0NogZNo60g1lG2P8EMH9zkFqU7QkVbznFaCbCFsXvN1PygQv2UyvyYG4TCqUsJV908AuA8BUBVvJVOFhOEdAyOGjL-0EAAKAIQVAJwGrvGUfA-AKGEUUCJmbrCgoUqJStaCuncA80TTIJ4KoJoOxuo18GVpOCKA0aCMQB1BfrIhYlqKlPMGRMaKPghuGWHhODuH2A0BKMRsxl1A8t6BqO8ZOIeOcOZNSIhoEY0D1HcFKG8HVtPRZtuyjp1loyNiAZ7BeNOLeOGI+MuK+IWBYu5KgepVOUCYqG3FCdPRohaBSewV1HfhoiwcBriOOKcLRK9EgAhvV3UHcoqDzw0AhQIU-3ocenJM-nTmwekvOpAeaqzN9NuKZJSOEnBsgbYokPImhv3ThthUiUsSSxspXwRKODuBYeWbOrLMutBuVKrJdK1LAB9volkJaQESuFMBFNcGMUg3cEKFIScDGsnxuu21eadOrLpwhrMEsM-HIvMEwMsRipoyuBLDMF1GigHICCAA */
     id: "Daystrom chatbot",
+
     context: {
       userData: {},
       chatmem: [],
@@ -19,7 +20,9 @@ export const chatMachine = createMachine(
       payload: {},
       errorMessage: "There is no error at the moment.",
     },
+
     initial: "Initial state",
+
     states: {
       "Initial state": {
         always: {
@@ -28,6 +31,7 @@ export const chatMachine = createMachine(
 
         description: `Leaving this here for any future preload ideas.`,
       },
+
       "initialize engine": {
         states: {
           "get user location": {
@@ -53,6 +57,7 @@ export const chatMachine = createMachine(
 
         initial: "get user location",
       },
+
       "app start": {
         description: "Route to voice or idle state based on settings",
         always: [
@@ -65,6 +70,7 @@ export const chatMachine = createMachine(
           },
         ],
       },
+
       "Accepting voice input": {
         entry: {
           type: "assignAsstTitle",
@@ -125,6 +131,7 @@ export const chatMachine = createMachine(
           },
         },
       },
+
       "Process chat prompt": {
         initial: "Append question to history",
         states: {
@@ -187,6 +194,7 @@ export const chatMachine = createMachine(
           },
           "prompt error": {
             description: "Fault occurred sending prompt to LLM",
+
             on: {
               recover: {
                 target: "Send prompt to GPT",
@@ -195,9 +203,44 @@ export const chatMachine = createMachine(
                 target: "#Daystrom chatbot.waiting for input",
               },
             },
+
+            // states: {
+            //   "showing error": {
+            //     on: {
+            //       diagnose: "triage",
+            //     },
+
+            //     description: `Showing the error and any diagnosis`,
+            //   },
+
+            //   triage: {
+            //     invoke: {
+            //       src: "triageProblem",
+            //       onDone: "tattle",
+            //     },
+
+            //     on: {
+            //       triaging: {
+            //         target: "triage",
+            //         internal: true,
+            //         actions: "assignDiagnosis",
+            //       },
+            //     },
+            //   },
+
+            //   tattle: {
+            //     invoke: {
+            //       src: "speakError",
+            //       onDone: "showing error",
+            //     },
+            //   },
+            // },
+
+            // initial: "showing error",
           },
         },
       },
+
       "waiting for input": {
         description: "Screen is idle and waiting for command or mode change",
         initial: "pause for update",
@@ -314,6 +357,7 @@ export const chatMachine = createMachine(
           },
         },
       },
+
       "process chat response": {
         initial: "get all conversations",
         states: {
@@ -431,21 +475,15 @@ export const chatMachine = createMachine(
           },
         },
       },
+
       "clear chat session": {
         entry: {
           type: "clearSession",
           params: {},
         },
-        always: [
-          {
-            target: "Accepting voice input",
-            cond: "auto listen",
-          },
-          {
-            target: "waiting for input",
-          },
-        ],
+        always: "initialize engine",
       },
+
       "speak answer": {
         invoke: {
           src: "speakText",
@@ -457,6 +495,7 @@ export const chatMachine = createMachine(
           ],
         },
       },
+
       "pause for effect": {
         description: "Pause to show the spoken text in the UI",
         after: {
@@ -467,9 +506,63 @@ export const chatMachine = createMachine(
           },
         },
       },
+
+      "login form": {
+        states: {
+          "showing form": {
+            on: {
+              "log in": "checking credentials",
+
+              "set state value": {
+                target: "showing form",
+                internal: true,
+                actions: "setProp",
+              },
+            },
+          },
+
+          "checking credentials": {
+            invoke: {
+              src: "processLogin",
+
+              onDone: {
+                target: "#Daystrom chatbot.initialize engine",
+                actions: ["assignLogin", "clearSession"],
+              },
+
+              onError: "login failed",
+            },
+          },
+
+          "login failed": {
+            on: {
+              retry: "showing form",
+            },
+          },
+        },
+
+        initial: "showing form",
+
+        on: {
+          cancel: "initialize engine",
+        },
+      },
     },
+
     predictableActionArguments: true,
     preserveActionOrder: true,
+
+    on: {
+      "sign in": {
+        target: ".login form",
+        description: `log in or out of the interface`,
+      },
+
+      "sign out": {
+        target: ".initialize engine",
+        actions: ["clearLogin", "clearSession"],
+      },
+    },
   },
   {
     actions: chatActions,

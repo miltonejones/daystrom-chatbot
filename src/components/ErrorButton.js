@@ -7,6 +7,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Stack,
+  Typography,
 } from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 
@@ -29,22 +31,42 @@ export const ErrorButton = ({ chatbot }) => {
     handleClose();
   };
 
-  if (!chatbot.state.can("recover")) {
-    return <i />;
-  }
+  // if (!chatbot.state.can("recover")) {
+  //   return <i />;
+  // }
 
   return (
     <>
-      <IconButton color="primary" onClick={() => setOpen(true)}>
+      {/* <IconButton color="primary" onClick={() => setOpen(true)}>
         <ErrorIcon />
-      </IconButton>
+      </IconButton> */}
 
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={chatbot.state.can("recover")} onClose={handleClose}>
         <DialogTitle>Error</DialogTitle>
         <DialogContent>
-          <DialogContentText>{chatbot.errorMessage}</DialogContentText>
+          <DialogContentText>
+            <Stack>
+              <Typography>{chatbot.errorMessage}</Typography>
+
+              {!!chatbot.diagnosis && (
+                <fieldset>
+                  <legend>Diagnosis</legend>
+                  <Typography variant="caption">{chatbot.diagnosis}</Typography>
+                </fieldset>
+              )}
+            </Stack>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
+          {chatbot.unhealthy && (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => chatbot.diagnose()}
+            >
+              diagnose
+            </Button>
+          )}
           <Button variant="contained" onClick={handleRecover}>
             okay
           </Button>

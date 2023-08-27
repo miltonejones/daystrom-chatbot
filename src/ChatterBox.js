@@ -3,10 +3,10 @@ import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import VoiceInput from "./VoiceInput";
-import ChatNode from "./components/ChatNode";
 import ChatInput from "./components/ChatInput";
-import EmptyChat from "./components/EmptyChat";
 import VoiceToggleButton from "./components/VoiceToggleButton";
+import ChatContent from "./components/ChatContent";
+import ChatBox from "./styled/ChatBox";
 
 const ChatterBox = ({
   chatbot,
@@ -17,6 +17,7 @@ const ChatterBox = ({
   ...props
 }) => {
   const offset = 130;
+  const ref = React.useRef(null);
 
   const modeListening = ["pause for effect", "Accepting voice input"].some(
     chatbot.state.matches
@@ -36,6 +37,11 @@ const ChatterBox = ({
   };
 
   const windowHeight = "100vh";
+  React.useEffect(() => {
+    const div = ref.current;
+    if (!div) return;
+    div.scrollTop = div.scrollHeight;
+  }, [ref, chatbot.streamText]);
 
   return (
     <>
@@ -43,7 +49,6 @@ const ChatterBox = ({
 
       <div
         style={{
-          transition: "all 0.3s linear",
           width: "calc(100vw - 20px)",
           height: `calc(${windowHeight} - ${offset}px)`,
           overflow: "hidden",
@@ -57,46 +62,15 @@ const ChatterBox = ({
           elevation={2}
           variant="elevation"
         >
-          {!!querying && <LinearProgress />}
+          {!!querying && (
+            <LinearProgress
+              color={chatbot.state.can("recover") ? "error" : "secondary"}
+            />
+          )}
 
-          <Box
-            sx={{
-              mb: 1,
-              height: `calc(${windowHeight} - ${offset}px)`,
-              overflow: "scroll",
-            }}
-          >
-            {!chatbot.chatmem.length && (
-              <EmptyChat chatbot={chatbot} onClick={createChat} />
-            )}
-            {chatbot.chatmem.map((c, m) => (
-              <ChatNode
-                key={m}
-                index={m}
-                {...c}
-                rephrase={(prompt, index) =>
-                  chatbot.send({
-                    type: "rephrase",
-                    prompt,
-                    index,
-                  })
-                }
-                retry={(index) =>
-                  chatbot.send({
-                    type: "retry",
-                    index,
-                  })
-                }
-              />
-            ))}
-            {!!chatbot.streamText && (
-              <ChatNode
-                role="assistant"
-                content={chatbot.streamText}
-                timestamp={new Date().getTime()}
-              />
-            )}
-          </Box>
+          <ChatBox ref={ref} offset={offset}>
+            <ChatContent chatbot={chatbot} createChat={createChat} />
+          </ChatBox>
         </Card>
       </div>
       <form onSubmit={handleSubmit}>

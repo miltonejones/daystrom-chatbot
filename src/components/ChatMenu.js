@@ -1,10 +1,9 @@
 import React from "react";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
+import MobileMenu from "../styled/MobileMenu";
 
 const options = ["Explain This", "Clean Up This Code", "Translate To..."];
-
-const ITEM_HEIGHT = 48;
 
 const ChatMenu = ({ onChange }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -24,7 +23,7 @@ const ChatMenu = ({ onChange }) => {
       <IconButton onClick={handleClick}>
         <MoreVert />
       </IconButton>
-      <Menu
+      <MobileMenu
         id="long-menu"
         anchorEl={anchorEl}
         keepMounted
@@ -36,7 +35,7 @@ const ChatMenu = ({ onChange }) => {
             {option}
           </MenuItem>
         ))}
-      </Menu>
+      </MobileMenu>
     </div>
   );
 };

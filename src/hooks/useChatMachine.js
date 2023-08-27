@@ -1,6 +1,6 @@
 import React from "react";
 import { useMachine } from "@xstate/react";
-import { create, generateText } from "../chat";
+import { create } from "../chat";
 import { chatMachine } from "../machines/chatMachine";
 import { announceText } from "../util/announceText";
 import { attachPreclick } from "../util/attachPreclick";
@@ -10,6 +10,8 @@ import dynamoStorage from "./DynamoStorage";
 import useClipboard from "./useClipboard";
 import { defaultProps } from "../machines/actions/chatActions";
 import { getAddressFromLatLng } from "../util/getAddressFromLatLng";
+import { generateText } from "../util/generateText";
+import { useTriage } from "./useTriage";
 const COOKIE_NAME = "chat-conv-x";
 
 export const useChatMachine = () => {
@@ -31,6 +33,8 @@ export const useChatMachine = () => {
     attachPreclick(handleClick);
   }, [clipper]);
 
+  const triage = useTriage();
+
   const [state, send] = useMachine(chatMachine, {
     services: {
       getUserData: async () => {
@@ -40,6 +44,14 @@ export const useChatMachine = () => {
 
       interfaceLoaded: () => {
         attachClicks();
+      },
+      processLogin: async (context) => {
+        const ok =
+          context.username === "mjones" && context.password === "admin";
+        if (!ok) {
+          throw new Error("log in failed");
+        }
+        return true;
       },
       getGoogleLocation: async (context) => {
         // alert(JSON.stringify(context.userData));
@@ -69,8 +81,12 @@ export const useChatMachine = () => {
         return {};
       },
 
-      getConversations: async () => {
-        return JSON.parse((await store.getItem(COOKIE_NAME)) || "{}");
+      getConversations: async (context) => {
+        const json = context.loggedin
+          ? await store.getItem(COOKIE_NAME)
+          : localStorage.getItem(COOKIE_NAME);
+
+        return JSON.parse(json || "{}");
       },
 
       updatePayload: async (context) => {
@@ -90,7 +106,26 @@ export const useChatMachine = () => {
           },
         };
       },
-
+      triageProblem: async (context) => {
+        const convo = [
+          {
+            role: "system",
+            content:
+              "i explain everything as sarcastically verbose as possible",
+          },
+          create(`I receieved this error
+          ${context.errorMessage}
+          with this stack
+          ${context.stack}
+          what could be the problem. list any possible solutions`),
+        ];
+        const res = await generateText(convo, 512, 0.7, (diagnosis) => {
+          send({
+            type: "triaging",
+            diagnosis,
+          });
+        });
+      },
       createPayload: async (context, event) => {
         const guid = generateGuid();
         const convo = [
@@ -125,10 +160,19 @@ export const useChatMachine = () => {
       },
 
       persistPayload: async (context, event) => {
+        if (!context.loggedin) {
+          return localStorage.setItem(
+            COOKIE_NAME,
+            JSON.stringify(context.conversations)
+          );
+        }
         await store.setItem(COOKIE_NAME, JSON.stringify(context.conversations));
       },
 
-      speakText: async (context, event) => {
+      speakError: async (context) => {
+        announceText(context.diagnosis, context.lang);
+      },
+      speakText: async (context) => {
         announceText(context.voiceText, context.lang);
       },
     },
@@ -203,10 +247,22 @@ export const useChatMachine = () => {
     };
   }
 
+  const unhealthy = triage.state.can("diagnose");
+  const diagnose = () =>
+    triage.send({
+      type: "diagnose",
+      errorMessage: state.context.errorMessage,
+      stack: state.context.stack,
+    });
+
   return {
     ...state.context,
     state,
     send,
+    triage: JSON.stringify(triage.state.value),
+    unhealthy,
+    diagnose,
+    diagnosis: triage.state.context.diagnosis,
 
     // exposed helper methods
     setLang,

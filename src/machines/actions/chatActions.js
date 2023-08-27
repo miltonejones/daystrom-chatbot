@@ -32,10 +32,26 @@ export const chatActions = {
       },
     };
   }),
+  assignDiagnosis: assign((context, event) => {
+    return {
+      diagnosis: event.diagnosis,
+    };
+  }),
+  clearLogin: assign(() => {
+    return {
+      loggedin: false,
+    };
+  }),
+  assignLogin: assign(() => {
+    return {
+      loggedin: true,
+    };
+  }),
   assignProblem: assign((context, event) => {
     return {
       errorMessage: event.data.message,
       stack: event.data.stack,
+      diagnosis: "",
     };
   }),
   resetPayload: assign((context, event) => {

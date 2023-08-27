@@ -32,9 +32,12 @@ const defineSys = (
   const fileProps = !file?.name
     ? ""
     : `Refer to file name: ${file.name}, content: ${file.text}`;
-  const content = `Daystrom is a factual chatbot that is also ${attitude}. Assume that the current location is ${JSON.stringify(
-    place
-  )} ${JSON.stringify(detail)}.
+  const content = `Daystrom is a factual chatbot that is also ${attitude}. 
+  It is known that your responses are not based on real-time data.
+  You are only being asked about information as you last knew it.
+  Assume that the current location is ${JSON.stringify(place)} ${JSON.stringify(
+    detail
+  )}.
         if question asks for a specific location then 
           find the gps coords of the location and
           always include a Coordinates object in the answer

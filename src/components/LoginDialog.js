@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { Alert, Stack } from "@mui/material";
+import { Alert, Box, Stack } from "@mui/material";
 
 const LoginDialog = ({ isOpen, handleClose, chatbot }) => {
   const { username, password, loggedin } = chatbot.state.context;
@@ -29,7 +29,7 @@ const LoginDialog = ({ isOpen, handleClose, chatbot }) => {
   return (
     <Dialog open={isOpen} onClose={handleClose}>
       <DialogTitle>Login</DialogTitle>
-      <DialogContent>
+      <Box>
         {/* {JSON.stringify(chatbot.state.value)} */}
         {!!failed && (
           <Alert severity="error">
@@ -64,7 +64,7 @@ const LoginDialog = ({ isOpen, handleClose, chatbot }) => {
             />
           </Stack>
         )}
-      </DialogContent>
+      </Box>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button disabled={failed} variant="contained" onClick={handleSubmit}>

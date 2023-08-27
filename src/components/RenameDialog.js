@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -9,14 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 
-function RenameDialog({
-  tempName,
-  setTempName,
-  open,
-  onClose,
-  onAccept,
-  initialValue,
-}) {
+function RenameDialog({ tempName, setTempName, open, onClose, onAccept }) {
   const handleAccept = () => {
     onAccept(tempName);
     setTempName("");
@@ -34,6 +26,7 @@ function RenameDialog({
           margin="dense"
           label="Name"
           fullWidth
+          size="small"
           value={tempName}
           onChange={(e) => setTempName(e.target.value)}
         />

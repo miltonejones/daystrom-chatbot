@@ -1,7 +1,7 @@
 import { Box, Collapse, IconButton, Stack } from "@mui/material";
 import { HomepageTextField } from "../styled/HomepageTextField";
 import AttachmentButton from "../styled/AttachmentButton";
-import { Keyboard, Mic } from "@mui/icons-material";
+import { Keyboard, Mic, Send } from "@mui/icons-material";
 import ChatMenu from "./ChatMenu";
 
 function ChatInput({
@@ -50,6 +50,7 @@ function ChatInput({
               ),
               endAdornment: (
                 <>
+                  {" "}
                   <AttachmentButton
                     edge="end"
                     contentText={contentText}
@@ -57,7 +58,13 @@ function ChatInput({
                       chatbot.setState("contentText", object)
                     }
                   />
-
+                  <IconButton
+                    disabled={!chatQuestion}
+                    edge="end"
+                    onClick={() => chatbot.send("ask")}
+                  >
+                    <Send />
+                  </IconButton>
                   <IconButton edge="end" onClick={() => setMode("voice")}>
                     <Mic />
                   </IconButton>

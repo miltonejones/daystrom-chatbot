@@ -1,62 +1,12 @@
 import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import SettingsIcon from "@mui/icons-material/Settings";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import Box from "@mui/material/Box";
-import Slider from "@mui/material/Slider";
 import { Divider, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { Switch, FormControlLabel } from "@mui/material";
-
-function generateMarks(min, max, step, binary) {
-  const marks = [];
-
-  for (let value = min; value <= max; value += step) {
-    marks.push({
-      label: binary ? Math.pow(2, value) : value.toFixed(1).toString(),
-      value: value,
-    });
-  }
-
-  return marks;
-}
-
-class CustomSlider extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: props.value,
-    };
-  }
-
-  handleChange = (event, newValue) => {
-    this.setState({ value: newValue });
-
-    if (this.props.binary) {
-      const valueInBinary = Math.pow(2, newValue);
-      this.props.onChange(valueInBinary);
-    } else {
-      this.props.onChange(newValue);
-    }
-  };
-
-  render() {
-    const { min, max, step, binary } = this.props;
-    return (
-      <Slider
-        marks={generateMarks(min, max, step, binary)}
-        value={this.state.value}
-        onChange={this.handleChange}
-        min={min}
-        max={max}
-        step={step}
-        valueLabelDisplay="auto"
-      />
-    );
-  }
-}
+import CustomSlider from "./CustomSlider";
 
 const SettingsDrawer = ({
   items,
@@ -79,18 +29,6 @@ const SettingsDrawer = ({
 
   // const isOpen = Boolean(anchorEl);
   const id = isOpen ? "settings-popover" : undefined;
-
-  // const handlePopoverOpen = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-
-  // const handlePopoverClose = () => {
-  //   setAnchorEl(null);
-  // };
-
-  // const handleSelectChange = (event) => {
-  //   setAttitude(event.target.value);
-  // };
 
   return (
     <Drawer id={id} open={isOpen} onClose={handlePopoverClose} anchor="bottom">

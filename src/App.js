@@ -11,13 +11,14 @@ import SettingsPopover from "./SettingsPopover";
 import { useChatMachine } from "./hooks/useChatMachine";
 import SideDrawer from "./SideDrawer";
 import { ErrorButton } from "./components/ErrorButton";
+import StyledAvatar from "./styled/StyledAvatar";
 
 export default function App() {
   const chatbot = useChatMachine();
 
   const {
     mode,
-    payload: sessionPayload,
+    payload,
     prompt: chatQuestion,
     setMode,
     setSpeak,
@@ -26,7 +27,7 @@ export default function App() {
 
   const setChatQuestion = (str) => chatbot.setState("prompt", str);
 
-  const renameConversation = React.useCallback(async (id, name) => {
+  const renameConversation = React.useCallback(async (name) => {
     chatbot.send({
       type: "rename",
       name,
@@ -60,46 +61,31 @@ export default function App() {
     setSpeak,
   };
 
-  const settingsProps = {
-    chatbot,
-  };
-
   return (
     <div>
       <SideDrawer chatbot={chatbot} />
 
       <Stack direction="row" sx={{ alignItems: "center", mb: 2 }} spacing={1}>
-        <IconButton
-          onClick={() => {
-            setListOpen(true);
-          }}
-        >
+        <IconButton onClick={() => setListOpen(true)}>
           <MenuIcon />
         </IconButton>
-        <Avatar
-          sx={{
-            width: 32,
-            height: 32,
-            cursor: "pointer",
-          }}
-          src="./Chat.png"
-          alt="logo"
-        />
+
+        <StyledAvatar src="./Chat.png" alt="logo" />
 
         <TextMenu
-          active={!!sessionPayload.title}
-          onChange={(name) => renameConversation(sessionPayload.guid, name)}
-          onDelete={() => deleteConversation(sessionPayload.guid)}
+          active={!!payload.title}
+          onChange={renameConversation}
+          onDelete={() => deleteConversation(payload.guid)}
           onCreate={createChat}
         >
-          {sessionPayload.title || (
+          {payload.title || (
             <>
               Ask <b>Daystrom</b> anything!
             </>
           )}
         </TextMenu>
         <Box sx={{ flexGrow: 1 }} />
-        <SettingsPopover items={composure} {...settingsProps} />
+        <SettingsPopover items={composure} chatbot={chatbot} />
         <ErrorButton chatbot={chatbot} />
       </Stack>
 

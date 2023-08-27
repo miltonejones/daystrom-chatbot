@@ -8,7 +8,7 @@ const create = (q) => ({
 
 export const composure = {
   professional: "professional",
-  sarcastic: "sarcastic",
+  sarcastic: "sarcastic and disgruntled",
   rhyme: "in rhyming every answer",
   haiku: "giving haiku answers",
   limerick: "answers in limerick",
@@ -29,18 +29,20 @@ const defineSys = (
   place,
   detail
 ) => {
-  const content = !file?.name
-    ? `Daystrom is a factual chatbot that is also ${attitude}. Assume that the current location is ${JSON.stringify(
-        place
-      )} ${JSON.stringify(detail)}.
-      Important: if question asks for a specific location, 
-        include a Coordinates object in this format in the answer
-        interface Coordinates {
-          longitude: number;
-          latitude: number;
-        }
-         `
-    : `refer to this ${file.text}`;
+  const fileProps = !file?.name
+    ? ""
+    : `Refer to file name: ${file.name}, content: ${file.text}`;
+  const content = `Daystrom is a factual chatbot that is also ${attitude}. Assume that the current location is ${JSON.stringify(
+    place
+  )} ${JSON.stringify(detail)}.
+        if question asks for a specific location then 
+          find the gps coords of the location and
+          always include a Coordinates object in the answer
+            interface Coordinates {
+              longitude: number;
+              latitude: number;
+            }
+         ${fileProps} `;
   return {
     role: "system",
     content:
@@ -49,6 +51,15 @@ const defineSys = (
     timestamp: new Date().getTime(),
   };
 };
+
+export const createSystemNode = (context) =>
+  defineSys(
+    context.contentText,
+    context.attitude,
+    context.lang,
+    context.userData,
+    context.userDetail
+  );
 
 const curate = (chatlog) =>
   chatlog.map((log) => {

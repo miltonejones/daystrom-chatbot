@@ -1,5 +1,5 @@
 import { assign } from "xstate";
-import { attitudes, create, defineSys } from "../../chat";
+import { attitudes, create, createSystemNode } from "../../chat";
 
 export const defaultProps = {
   lang: "en-US",
@@ -158,17 +158,7 @@ export const chatActions = {
 
   appendPrompt: assign((context, event) => {
     const chat = create(context.prompt);
-    const query = [
-      defineSys(
-        context.contentText,
-        context.attitude,
-        context.lang,
-        context.userData,
-        context.userDetail
-      ),
-      ...context.chatmem,
-      chat,
-    ];
+    const query = [createSystemNode(context), ...context.chatmem, chat];
 
     return {
       prompt: "",

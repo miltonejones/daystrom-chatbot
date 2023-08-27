@@ -8,8 +8,10 @@ import ChatButton from "./ChatButton";
 import { HomepageTextField } from "../styled/HomepageTextField";
 import CurrentLocationMap from "./CurrentLocationMap";
 
+const regex = /{[^}]+}/;
+
 function extractLatLong(str) {
-  const regex = /{[^}]+}/; // /{[\s\S]+}/;
+  // /{[\s\S]+}/;
 
   const match = str.match(regex);
   if (match) {
@@ -25,7 +27,7 @@ function extractLatLong(str) {
   return null;
 }
 
-function ChatNode({ retry, rephrase, role, content, index, timestamp }) {
+function ChatNode({ retry, rephrase, role, content: stuff, index, timestamp }) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [innerText, setInnerText] = React.useState();
   const handleSubmit = (event) => {
@@ -34,7 +36,11 @@ function ChatNode({ retry, rephrase, role, content, index, timestamp }) {
     setIsEditing(false);
   };
   const { copy, copied } = useClipboard();
-  const gps = extractLatLong(content);
+  const gps = extractLatLong(stuff);
+
+  const mapLink = (map) =>
+    `[this location](https://www.google.com/maps?q=${map.latitude},${map.longitude})`;
+  const content = !gps ? stuff : stuff.replace(regex, mapLink(gps));
 
   return (
     <Box

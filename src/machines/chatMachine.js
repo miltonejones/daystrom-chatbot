@@ -4,7 +4,7 @@ import { createMachine } from "xstate";
 
 export const chatMachine = createMachine(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5QBECGBPWAXATgewFsACAYwAtUsAjPLAYlgEsoA7IxlgbQAYBdRUAAc8TLIzwsBIAB6IAjACYA7AoB03OQFYALFu0AObgGYAnJoUAaEOkQBaI6qVH927UpP6l3fSe2a5AL4BVmiYuISkFNS0DMxseACuWDz8SCDCouKSabIItnLc3JqOCnJuJgpGhZoAbEZWNgheqtoKbRVGcp0KvgpBIRjY+MTklDRYqgCSLIxiqAA2RNiUYHQpUhmzWVK5+Qq1qvqGRprGXtrcNdoN8jUmh84eZqV+Pkb9IKFDEaPRExxbBaMABeYCIYBYUA4YFUMCwRASsDAOCI8zwJEoWToEAkMI4ADc8ABrGFfcIjKLjVQAubzEFgiFQlgwuEIpEotEYsQSBAE9GYiQpdZpTbc7KgXZyMpyVQKNw1JTuGqaFQmG4IHTFTwmIymOX6UwmJQfMnDSJjWjUma0+ngyHQ2FgeGcgVsCBO1CMeawbG4q2EkmqU0-SmWmmMIGgu1MllO1H8sVEd1YT3e3ksQlcrJCvgbERbCQ7OxKGrcVQ67x+DSqhXq5UypwluqnGp3Uwmwbk81-VSoQSCJYpnD0YVCfNiot5VxKRytbhylVGSondVdVqyowqU5dTSbjthM2-Kl9gfLYdrOSpMeZQs5Oy6bSqIzKkxdbhKTyVORKdUvLUfnoPBqfZfH3b4KQtCYAEESBIMBBDESEiEJRg4PYFhBCSOgMRYOD5lHdJx22O8EBqfRHE0XxzAUHxtGfXVVyle5uG0I0pV1cxnzArsj0tGC4IQjgoGQvBULBDhMPoMQCDARJklzEUiNvCVECXe4tC0QoDG-fZVyuBtWjohRvAVQwam4w9Q2g2D4MQ4SULQiSklUM94QcsEcDAEg8FYAsWF9ZkCNFYiVIQKU2nUE5PHcHd2NXYyZ0oxUWJMd9330Ppgk+TtLMg1R+NsoSRLE9DJJcoc3NEtDPO83yxQCsBOEvPMb3FGR5EUdTuBMYCnHnb8P1XFQZTMOpLlMLo2gskM8oKwSkPc0rnNc4rqq8nzrSxRFkSIFN5iJISgqUtrcmAx9Wn8IwLhqKVv30VcWIcJQ5COKUNEuYxNGmiCezmuzVvEjDnO2lEcLwhr-WJPEMyh2wFBqIkoFQI7WsnfQakOBdTiNTjOmuax5E0A11DKUsPw0Gi3G+7sqQABXwODYFgbsiEEYYEPy-sIQgIgAEcEjgRMsDwIgyEYbA8BwdA1gU68-MnZcHDlZcLkqI4XHVDwZU3I5CiKK7lBManeImen0TgZnflZ9mJgAZW563CAQ3aRYAcVpgAVCG+UDH2wFsZKFRR+WSKuujHGfMo6J1RtNAezcnw04zS1fXdMoGA8Zp7M3GctqJHYIDn7ZYHm2ad+FhaId2vZxZlId9mGSQDrwg+axTUdDnryP0In2l3Dw6PjmdOn8ZPuq0Jdjas1Qc4tlmy8Lu2HYX53K+ruhkXwHBVEEeZKAAM0lgh6-9wOlGDicSOUOR7hLfr9DKbq-Hi7r1CNFR0ffZVuqnvLZ6Z+eNtVDF1LjbF2VdPYMFwGAVAxBPKwGECwJEF8QrtQQDRHqqhTguDkHUD8Bg44EyaKWCOdwTCvgqCxH+WVgw-TpgzOeVsV4TGYeCHAW86A1TwPiZEKDlJoLaCqWUFxuqmAuCqXBjFOiqC6FdAob4ly6F-tnBhACmFANYZvSW2FUC4TAPhWWhEO6hVKPDLB-gihdyUKxBiRCXpmBkd1Us84-APm0MoqkAB3T0-1D4oicvQbaAM+EnUQP4GcigxGKk3DpGoeldCzjlEuEy5N9AeMtN4rYSE-FLXoEieEywsBgnxAsAWISFZqwjiWGiygrocXVFdI4MjcHvmotYxQxoaE5Szl4nxRUckBLoKgWARJykkRvoYForg6h1Ayq2K4q5XxllbD4F6CpFEVHSRMTJvjJa5M4RCWBjVDHBX4bkfYShij0TEUaFirYfxEIuTOaxqVPC6guiWLZqgdn9L2YMzyBBuHHKvEYkOJieja3RuQgodEritF-MBYoN07jaGVLqMiRsumZzoRkvp2S-lA3oMyTx3YxmhVsL4VQyo7gllaModGrhfybnOjoRQfhnpti+T8-F-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-iuBcEuWPJsnmnsl-LEzTJk3mAvJInsHKxvMUDvN3GtMaDZQxkaTIgSjegMC+X-lP2YXwtCi0GAipRimqB4wXDrCcA3DIWTiSj8AYtR3zmYU5kEAdn5kFiyHATFglilhYslRumWU4v0wyh4qIV8Axmgr4IDzlGKMlJUQ50AXLmAWXjATXk9iUvOWVDUErK8B7mdWek1lRXUDcD0vMCUQEL-lEvM3Es0TGxsqHW6iRXcAMCqCOFpwopvgxmVHdxUD928s-PXXbWzSSGCrCiuNojXAqyKCcH6NbDVTEUAinSsKMt6UzXSpYTULBALVAyKUyo0lxN0DqSrEXF-FcHIl3AVEcpUAfw-OnKAO+TSs7QmC+z3TNyaoD1nBYn2Dei1IePQXfhaF1AqC3L3B8oA1GtI3ExgQgEaHbPcJ42KGfLqFMAYyJLDKlHUA1SXTlFcCumI3iLE0vyCulxlKHQOGcGAh8H0hulwS5N1HDJ1wE0SsmhdKGpexPzO3D160ypoi0HLC3FCIwUHjsXIXIhMlLF3D8DBrH1ry53Pxs0IIG3SxFSjyy0ythRlAmTRV8IxRCzKE1wFKJi0FKA+IqstBhrRzhs+war5xFwowRvRgcHMID2cDRvqEeW8DvUV0VEMD1hXRSurz8qJr5p5xgRx0bwgEyvJ2KDcAMCuH0kuUHK+v2CpX6iStkU2S2uPzVrPw1sj2j3Nx1oRtSjUDtMXx1FMDOF-FqHVP2FqH8AqCiuVqhvax5rDwuwbyFsky3ndoME12ei8OenCr73XGsRVABpfyuCnK5vixMt5pjreoTo+uNNcAuFlFU38EMAevUzDJukcUph-2UCfS+RAJgXAPM0gKYH4VAvJRpXUG8FDQ8CwP8CZVOHLB0G6hQyOGfE5ue3azwNQAIKIJIJwGptRUfA-BhX032B8AeirsGNbAMFaCuncGO1qpEM0PEJIEXPLo7IKC418DmpOHyofhVMQB1E9rIhYlGK0B7nTgjuhI2IcKapvmHhODuH2A0B6Pil22XBUGMFaQiupMmLgyqNiPiIICaqHo0D1HcDfMsIaX8HLAIZoh1h40xRVu+LAdhPhLmMBKRIWDbNBU+rCgXDjV8NgadKBpohaAIf-zlyXANHQc2IhLpK9EgCapd3UGAmwJ7w0HhSIR0F3K0hiWeEFKFKAA */
+    /** @xstate-layout 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-BhsDbq0Sm2Zpv4iH4MMCqCy+gNZ-WM-lXsZnwEr0sxIazLI7OkAkI5l0LnfQBw83gLzt8O7y3vhFN1Tg3A2rAnWMoIWvzXX05lBKOK9WJY0cluAVmYy2dmPZrLkqct7xk5Bk+WBAmXwDrYTz3nLnnSnBWEsqhqhtA-mUUwP5qj1jor+dsaTp5-OIyZhLlsOuUCICl9B0JgOlLZhgVE1Gj2nsDAw7xYx2vL3O5d6zN3QS5vQA9iAaYMzSr4IhsCBQ7UxJon3DULKzDSmVPjR4NTJFtdO59uE33oQkCo7d-7gOnvuam+gAg6BHhMZOCWACD6TDjUI28qmN1KZtjogaGiRHm2kY+xZrrqWcd47+-dvAj2il3YByL3mYgsCzFDZ3cNORDDNE0GZF+cdzD3DRep6U7RyiOGfEqdHzDMcXb51do+kqJZwgJ5LonTdT22HQNwLAKgqCIa-E4dwev5F6zeXsG6fcOg4s1IbuLjCLQ85ttji3OAmDYHF4TiDR8xsTdg07l3bu5tmOwe++sBs9Q9PuHoTbdyVwdDq3FMvRvzNR7N9Zm31GdF6J4QxxD84luG2VGItW+ofxgUq0BNWFiiG7Gr0lr7dfoRSab7JgxBEmP3BJvUlZC5J1vvfHnjWUylSmRVWPs7WPJ9qGn7Rlv-Cs8K8QJ4aKOk3AdDMjq8aaKFwHHLAuSRoXXB6pILL1AkMV6IjMyYg3r2DvhvTKgGxEJeCOCqgOLGBOAaiRbbgqgqic6vYtqoKIKEhEAGKwA+JIh25uYtznpyDoBYBmoX5lbYIVhvRqxGTKKOAGhExFA9RLqlCr4tij5h5vZHxdqgj5JgCnyny+T0BlrJilJ9hVpIg1q9QGyNpc4gK5r5pDKCHCEkAKTQpXIRKRTt4uBape6KD9TaxVBWJqx0rGQWTUzcEtqoiMhboED6KGLGKaHzZkSOD-he7yiB6wF1D6iVYahPIBZGw6R6q2EcD2F0Bko4HwQJAsAaFhpUE3KKqFDjQvAravAKjriGBPhKB7DuDbiKDeA8rWGkZhFsCp6wBkB4A+Igo4AOG2GYQKZZx+YGDQ6yilDPTcZ56IHjRGx6ixZrrxaUhlH2HuRVE1GGoOFi7lqoQVJy6lZYIWo6CaDthFDJwaiPBOpODqaIGs4er3A7IKEFQjGp7kC+QnQoS46QDgg0i5YNz5ZHG9gnEwZnEkAXEiRXFuhxHhipi8iZgChg6UGLFX4ASFBtga6-ieDljtg-gGhPgARtDRaeCJRUyhH+ThGnFkDnElSfE3E-HehJ5QbjYwaPHDHonlEvFYlvE4k+RfG3HA7xhZiAkuHZ4WooEHB+BqwNZtgwmJzuD-hgQWT4xRT04DFHZDEWjPF1FqAnEpiQAz44CnKmoKbKi8aOCKDVDjTzidBqgEIxQKjKqlDPpGaDHh5jBXF7qoAxHxBxFjHVERGwDxBUAEDTBMYPQHBfi0SPT6DGBqinAuAa4eAMT0qHHoGkYWm3ZWl+Q2ljCVH2kTYMCxgzHlKzCVJAnXJqSPCzgpKdBmSMEG5qi2Cgn2ovAc4eD3B4olEgIRmghRmxGxlOkulwhJgph3FEEkhhnVmC7RHRm2mOnOnTCJjuieiwAMn-FcDMkJHAk4IgTqCoYUwGjeDaCJIzq7A3RNhuBLkzSznf7dl1kxnuSNmDktkjnDYHzJ7QbSmkkWg1k9n1mHkDnNnDm-EIzjnZgsmX4tKGwFDqYzREK-waxvrGClgamnA8bX67mIKRnWm2kRmZDtpykQBKnSxMZ7AIFGyqBqwWSdA1hYZ4L6Aan6YmwKh6qBJQC0B3bMw+JSy8zUU4CEinyog+IPlNlDnJinmuZXwvZ7KkZkUUW5pUU0VEB0UMVMUsXHnPmjl-Gg68AqmWLlDmArIti4rNK2DzqaB3DqaLgLq5GWRVkFR8XW6jJ4FCUiWMXVHiVPnsVehnlSwXnElXmdkGVSzkVGWCU4C0VSyiUWX9msUnkvkg6ijvlTkZk4KQHagATmDmDoZLKJxIx0RPj6AMrLk8bpr6W9iGWUUmUeXCVeXmXMUoKxinyIUKnIUUEfmJFDorizg-TPjwozTaCqWai1IrorhMrHBoE8UgJSkOGZUCXZUQAKaZyaAbERbqYrYrl1D2BuAzLeB2pUzaS5TpWUh9XGV0WeX0X5V2nkoJm+WunpnaFTJjQtB3C7DyK4VTUoqaCFEATHCVgtiHbXljCrXuUbXeXMWIhxGZYsCnyMB1Euh0BEgYAqkmA3S+DjX6heBtiFkGRJq-TGCvCKZtCkUuX8VrWmV5ViVxk7UXyJnFLiFlJzFt6agclgSVg7bdKFl3DqDDqqB9wzQZSBDcQsB4BujwCpBPUhXaH2D6j1ihaGGI2hadFTWDzSivDl6MparCamk8GTAAjzDlpc1TjTXK5yiKUj74Yjx2AGDPwMTCLNbPh6phgRj0h2hMhK1kQ7A6Q9SEKnWjRQFqo03CLIlfilBEJG27Qm1Rj2gsgQxxjjkW1UoxJvTXCeHrY4XTp1AVBajKi7CFGbLwGPVOW9jG20iRgMg+2xjOgJj+Xs0LGhWgHa505BbPjnDKi1ggTM79wmB4Y0TFEy0tqnhDh-5YCB3YJqXW0vyvBQ3l6nDNKuAFAJRMplAdWLh6pAwlSrTBJt3bCgkawmClCmS2qKrawsGvzVDlgdBDxJ1dWAyCTLROQ1SgwVQbSrQ8INRYJaFTgTTShaS9F6CnANBMQvAHAooAIGTlj3Dj373AxT0kpAZsikBz5GIz3a2VYAQ6RpLL3XDrgND7CtIo4b69T6h6rqIm6QKgORTLouDxQGyJT8aai1jlBbis65GnUGw72iZqIY6sKlxcyCBOwCxCzwXVziySzSyYM6qrK4OGYEPNI1aFBUycG5HKKoM0OaJ0OOwbyrzbxwJeyYOvD4z3KZR9zurVDaxtCCNF67D4zuBiPG60NrzsKlwKkKNFAYryj6hlh9yR1XB4KKh66qkOB6PLUEqDLbqt3y6VVJxvR0T5FJW05a1hVNgaoaw8ko7Kh-ruOAZKHdoFq7qlKcOJQcn+NVad5BMND6jhZyhfKZNcEN2kaboSZAYJNiorxgZJMx095x1jxU5cZ1AqiJrRYvCLqGz7iuN8rkZ+qUaIIQB1D52HVmBaivwPLtjQlBMVCdCFBarLqZNJVRO1GAYn4jYKP+5hO4IGQ6pELNIGDvj4LthCZONtX74m7Y4KN3oaU6May4L6DLJaDTNrJFCUzNAnO86oL842Y4F9bfXZbOaYP6AdA9TAQYVtiPA+FDqSg674wVkOC-iUPHaUiR6dbvPm6-YJ6S7nOuCXO5HXN+MZOmT3qq7U0BZ6CvO14ovWa3kN4QCYNU5ajzpMqbMHFvJrkvw6oajsQvBkvIvdYx5x5GUS7UYKPqYFBKKL7tiGDJxvKAvCJ7CJQvCNWdVUMnYGPku8vUumNePTmoE01VCh1DQeq2M4IQ5zi-I4UbL6DcsT4UtT69OasDMLaeAlhAS8PaXuDr6Au9SUzv5lDPrf6-7-7naAFMCCJX2W10qFBfLvyRVx0sotgjXvxIappNh6qYGoDYG4H4E4D-OIlNA6RnBpyqDgtJxqzKbPgf3zhuDyhtZ8EAaqEiGcMAKaDVNHBKg6TC2IB7ZglRZmCdCqD4xol2ETacO+ApzKDgkti+CGwvQFCSJ7g-SkxeGDsYkwbY21EECcMRu7hpEtOmTvhvpdAHCSL4Z9ynDGD13ilmkynkmjGvHvGkC0l4lzB50wreOlAk1PovCTs7F97XT3RQ0zigQvMdPXtDswaymejykQacMe5gkDwCZqweAbaJx6nHAGkDQmyVkFNdlQW1kwWeMOvhwGzXS-lIZ0rlAdu5BdDXS5E8nLqemPqQWWn4fbX2G0tGwliDRJW+DLpayJz+kgTxIAuNjzhMfQW9kNmPlsWtm0ucYpHNV9sARaA-hKaKbqaPCKgVDHDwsSnml7ksdwUSAIWQc0tauhWtEFC3WahGmvi0RAUjpfh6wcRqY6dXsvUDW5WbVMWbug0KWGC9TKWPCqV5lNCKPAR4YG4o04CuVZXrWefvWsfDtmfaHRW9yZTlBaWARBO2BXWvhcmb1I6ksgfudxdmVY1HlWUyfJdThTI1XeCmQ8ZdDPhGsd0FBRXV0YWntilPVqAlcY1ec+U3HfW-X-VUFhsRRNdvRyjVBgU6TlCTV2AqjU5JVjUIm-rFeo1uUedlcWWFVwjFUmf2uvvauTT4JDTZTjQabZdLdHtVY-Tt4cfdfJ2UihuuFB3RbSiPR1Xl65lqjuDa7iKviFEaxAJM1AA */
     id: "Daystrom chatbot",
 
     context: {
@@ -18,6 +18,7 @@ export const chatMachine = createMachine(
       speak: true,
       conversations: {},
       payload: {},
+      chatHistory: [],
       errorMessage: "There is no error at the moment.",
     },
 
@@ -203,40 +204,6 @@ export const chatMachine = createMachine(
                 target: "#Daystrom chatbot.waiting for input",
               },
             },
-
-            // states: {
-            //   "showing error": {
-            //     on: {
-            //       diagnose: "triage",
-            //     },
-
-            //     description: `Showing the error and any diagnosis`,
-            //   },
-
-            //   triage: {
-            //     invoke: {
-            //       src: "triageProblem",
-            //       onDone: "tattle",
-            //     },
-
-            //     on: {
-            //       triaging: {
-            //         target: "triage",
-            //         internal: true,
-            //         actions: "assignDiagnosis",
-            //       },
-            //     },
-            //   },
-
-            //   tattle: {
-            //     invoke: {
-            //       src: "speakError",
-            //       onDone: "showing error",
-            //     },
-            //   },
-            // },
-
-            // initial: "showing error",
           },
         },
       },
@@ -530,11 +497,11 @@ export const chatMachine = createMachine(
                 actions: ["assignLogin", "clearSession"],
               },
 
-              onError: "login failed",
+              onError: "login failed error",
             },
           },
 
-          "login failed": {
+          "login failed error": {
             on: {
               retry: "showing form",
             },
@@ -545,7 +512,93 @@ export const chatMachine = createMachine(
 
         on: {
           cancel: "initialize engine",
+          "new account": "create account",
+          "forgot password": "forgot password workflow",
         },
+      },
+
+      "create account": {
+        initial: "show form",
+
+        states: {
+          "show form": {
+            on: {
+              submit: "submit details",
+
+              "set state value": {
+                target: "show form",
+                internal: true,
+                actions: "setProp",
+              },
+            },
+          },
+
+          "submit details": {
+            invoke: {
+              src: "createUser",
+              onDone: {
+                target: "#Daystrom chatbot.login form",
+                actions: "assignNewUser",
+              },
+              onError: "creation failed",
+            },
+          },
+
+          "creation failed": {
+            //...show error message
+            on: {
+              retry: "show form",
+            },
+          },
+        },
+      },
+
+      "forgot password workflow": {
+        initial: "show form",
+
+        states: {
+          "show form": {
+            on: {
+              submit: "submit details",
+
+              "set state value": {
+                target: "show form",
+                internal: true,
+                actions: "setProp",
+              },
+            },
+          },
+
+          "submit details": {
+            invoke: {
+              src: "resetPassword",
+              onDone: "sent confirmation",
+              onError: "reset failed error",
+            },
+          },
+
+          "sent confirmation": {
+            on: {
+              okay: "#Daystrom chatbot.login form",
+            },
+          },
+
+          "reset failed error": {
+            // ...show error message
+            on: {
+              retry: "show form",
+            },
+          },
+        },
+      },
+
+      on: {
+        "forgot password": ".forgot password",
+        submit: "forgot password.submit details",
+      },
+
+      on: {
+        "new account": ".create account",
       },
     },
 

@@ -1,7 +1,7 @@
 import { Mic } from "@mui/icons-material";
 import { Fab, Stack, Typography } from "@mui/material";
 
-const EmptyChat = ({ onClick, chatbot }) => {
+const EmptyChat = ({ chatbot }) => {
   const ready2Chat = chatbot.state.matches("waiting for input");
   return (
     <Stack

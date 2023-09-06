@@ -42,9 +42,10 @@ export const chatActions = {
       loggedin: false,
     };
   }),
-  assignLogin: assign(() => {
+  assignLogin: assign((_, event) => {
     return {
       loggedin: true,
+      ...event.data,
     };
   }),
   assignProblem: assign((context, event) => {
@@ -180,6 +181,7 @@ export const chatActions = {
       prompt: "",
       query,
       chat,
+      chatHistory: [...context.chatHistory, context.prompt],
       chatmem: [...context.chatmem, chat],
     };
   }),

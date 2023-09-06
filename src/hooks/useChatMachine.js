@@ -12,6 +12,8 @@ import { defaultProps } from "../machines/actions/chatActions";
 import { getAddressFromLatLng } from "../util/getAddressFromLatLng";
 import { generateText } from "../util/generateText";
 import { useTriage } from "./useTriage";
+import CryptoJS from "crypto-js";
+
 const COOKIE_NAME = "chat-conv-x";
 
 export const useChatMachine = () => {
@@ -46,17 +48,32 @@ export const useChatMachine = () => {
         attachClicks();
       },
       processLogin: async (context) => {
+        const { password, username } = context;
+        const encryptedUsername = CryptoJS.AES.encrypt(
+          username,
+          process.env.REACT_APP_ENCRYPTION_KEY
+        ).toString();
+        const encryptedPassword = CryptoJS.AES.encrypt(
+          password,
+          process.env.REACT_APP_ENCRYPTION_KEY
+        ).toString();
+
         const ok =
           context.username === "mjones" && context.password === "admin";
         if (!ok) {
           throw new Error("log in failed");
         }
-        return true;
+        return {
+          encryptedUsername,
+          encryptedPassword,
+        };
       },
+
       getGoogleLocation: async (context) => {
         // alert(JSON.stringify(context.userData));
         return await getAddressFromLatLng(context.userData);
       },
+
       askGPT: async (context) => {
         // Extract relevant data from context.
         const { query, tokens, temp } = context;
@@ -76,14 +93,17 @@ export const useChatMachine = () => {
       startListening: () => {
         recognition.start();
       },
+
       stopListening: async () => {
         recognition.stop();
         return {};
       },
 
       getConversations: async (context) => {
+        const { username } = context;
+
         const json = context.loggedin
-          ? await store.getItem(COOKIE_NAME)
+          ? await store.getItem(username)
           : localStorage.getItem(COOKIE_NAME);
 
         return JSON.parse(json || "{}");
@@ -106,6 +126,7 @@ export const useChatMachine = () => {
           },
         };
       },
+
       triageProblem: async (context) => {
         const convo = [
           {
@@ -126,6 +147,7 @@ export const useChatMachine = () => {
           });
         });
       },
+
       createPayload: async (context, event) => {
         const guid = generateGuid();
         const convo = [
@@ -159,14 +181,15 @@ export const useChatMachine = () => {
         };
       },
 
-      persistPayload: async (context, event) => {
+      persistPayload: async (context) => {
+        const { username } = context;
         if (!context.loggedin) {
           return localStorage.setItem(
             COOKIE_NAME,
             JSON.stringify(context.conversations)
           );
         }
-        await store.setItem(COOKIE_NAME, JSON.stringify(context.conversations));
+        await store.setItem(username, JSON.stringify(context.conversations));
       },
 
       speakError: async (context) => {
@@ -248,6 +271,8 @@ export const useChatMachine = () => {
   }
 
   const unhealthy = triage.state.can("diagnose");
+  const stateEnabled = state.can("set state value");
+  const chatEnabled = state.can("ask");
   const diagnose = () =>
     triage.send({
       type: "diagnose",
@@ -265,6 +290,8 @@ export const useChatMachine = () => {
     diagnosis: triage.state.context.diagnosis,
 
     // exposed helper methods
+    stateEnabled,
+    chatEnabled,
     setLang,
     setTokens,
     setTemp,

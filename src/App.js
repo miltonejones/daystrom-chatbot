@@ -66,7 +66,10 @@ export default function App() {
       <SideDrawer chatbot={chatbot} />
 
       <Stack direction="row" sx={{ alignItems: "center", mb: 2 }} spacing={1}>
-        <IconButton onClick={() => setListOpen(true)}>
+        <IconButton
+          disabled={!chatbot.stateEnabled}
+          onClick={() => setListOpen(true)}
+        >
           <MenuIcon />
         </IconButton>
 

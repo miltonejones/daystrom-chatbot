@@ -1,3 +1,5 @@
+import { decryptData, encryptData } from "../util/crypto";
+
 class DynamoStorage {
   endpoint = "https://storage.puppeteerstudio.com";
 
@@ -98,15 +100,25 @@ const dynamoStorage = () => {
   const auth_key = "anon-api-chatbot";
 
   const getItem = async (name) => {
-    return await store.getItem(auth_key, name);
+    const encryptedValue = await store.getItem(auth_key, name);
+    if (encryptedValue) {
+      return decryptData(encryptedValue);
+    }
+    return null;
   };
+
+  // const getItem = async (name) => {
+  //   return await store.getItem(auth_key, name);
+  // };
 
   const removeItem = async (name) => {
     return await store.removeItem(auth_key, name);
   };
 
-  const setItem = async (name, value) =>
-    await store.setItem(auth_key, name, value);
+  const setItem = async (name, value) => {
+    const encryptedValue = encryptData(value);
+    await store.setItem(auth_key, name, encryptedValue);
+  };
   return { getItem, setItem, removeItem };
 };
 

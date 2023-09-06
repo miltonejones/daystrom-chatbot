@@ -7,6 +7,9 @@ import { Divider, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { Switch, FormControlLabel } from "@mui/material";
 import CustomSlider from "./CustomSlider";
+import { langs } from "../langs";
+import DropdownSelect from "./DropdownSelect";
+import { Option } from "./Option";
 
 const SettingsDrawer = ({
   items,
@@ -47,63 +50,46 @@ const SettingsDrawer = ({
       </Stack>
       <Divider style={{ width: "100%" }} />
       <Stack sx={{ p: (t) => t.spacing(0, 3, 3, 3) }}>
-        <Typography sx={{ mt: 1.5 }} variant="caption">
-          Temperature
-        </Typography>
         <CustomSlider
+          label="Temperature"
           value={temp}
           min={0}
           max={1}
           step={0.1}
           onChange={setTemp}
         />
-        <Typography sx={{ mt: 1.5 }} variant="caption">
-          Max Tokens
-        </Typography>
         <CustomSlider
           value={Math.log2(tokens)}
+          label="Max Tokens"
           min={7}
           max={11}
           step={1}
           binary
           onChange={setTokens}
         />
-        <Typography sx={{ mt: 1.5 }} variant="caption">
-          Language
-        </Typography>
-        <TextField
-          select
-          size="small"
+
+        <DropdownSelect
           value={lang}
-          onChange={(e) => setLang(e.target.value)}
-          fullWidth
+          onChange={handleSelectChange}
+          items={langs.map((item) => ({
+            value: item.languageCode,
+            label: item.nativeLanguageName,
+          }))}
         >
-          {langs.map((item, index) => (
-            <MenuItem key={index} value={item.languageCode}>
-              {item.nativeLanguageName}
-            </MenuItem>
-          ))}
-        </TextField>
+          Language
+        </DropdownSelect>
 
         <Flex spacing={2} sx={{ width: "100%" }}>
-          <Stack>
-            <Typography sx={{ mt: 1.5 }} variant="caption">
-              Composure
-            </Typography>
-            <TextField
-              select
-              size="small"
-              value={attitude}
-              onChange={handleSelectChange}
-              fullWidth
-            >
-              {Object.keys(items).map((item, index) => (
-                <MenuItem key={index} value={items[item]}>
-                  {item}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Stack>
+          <DropdownSelect
+            value={attitude}
+            onChange={handleSelectChange}
+            items={Object.keys(items).map((item) => ({
+              value: items[item],
+              label: item,
+            }))}
+          >
+            Composure
+          </DropdownSelect>
 
           <Stack>
             <Typography sx={{ mt: 1.5 }} variant="caption">
@@ -130,112 +116,16 @@ const SettingsDrawer = ({
   );
 };
 
-const Option = ({ value, onChange }) => {
-  const handleToggle = (event) => {
-    onChange(event.target.checked);
-  };
-
-  return (
-    <div>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={value}
-            onChange={handleToggle}
-            name="autoOpen"
-            color="primary"
-          />
-        }
-        label={value ? "ON" : "OFF"}
-      />
-    </div>
-  );
-};
-
 const Flex = ({ children, ...props }) => {
   return (
-    <Stack direction="row" alignItems="center" {...props}>
+    <Stack
+      direction="row"
+      {...props}
+      sx={{ alignItems: "center", ...props.sx }}
+    >
       {children}
     </Stack>
   );
 };
-
-const langs = [
-  {
-    languageCode: "en-US",
-    languageName: "English (United States)",
-    nativeLanguageName: "English",
-  },
-  {
-    languageCode: "es-ES",
-    languageName: "Spanish (Spain)",
-    nativeLanguageName: "Español",
-  },
-  {
-    languageCode: "fr-FR",
-    languageName: "French (France)",
-    nativeLanguageName: "Français",
-  },
-  {
-    languageCode: "de-DE",
-    languageName: "German (Germany)",
-    nativeLanguageName: "Deutsch",
-  },
-  {
-    languageCode: "zh-CN",
-    languageName: "Chinese (Mandarin, China)",
-    nativeLanguageName: "中文",
-  },
-  {
-    languageCode: "ru-RU",
-    languageName: "Russian (Russia)",
-    nativeLanguageName: "Русский",
-  },
-  {
-    languageCode: "ja-JP",
-    languageName: "Japanese (Japan)",
-    nativeLanguageName: "日本語",
-  },
-  {
-    languageCode: "it-IT",
-    languageName: "Italian (Italy)",
-    nativeLanguageName: "Italiano",
-  },
-  {
-    languageCode: "pt-BR",
-    languageName: "Portuguese (Brazil)",
-    nativeLanguageName: "Português",
-  },
-  {
-    languageCode: "ar-SA",
-    languageName: "Arabic (Saudi Arabia)",
-    nativeLanguageName: "العربية",
-  },
-  {
-    languageCode: "hi-IN",
-    languageName: "Hindi (India)",
-    nativeLanguageName: "हिन्दी",
-  },
-  {
-    languageCode: "ko-KR",
-    languageName: "Korean (South Korea)",
-    nativeLanguageName: "한국어",
-  },
-  {
-    languageCode: "sv-SE",
-    languageName: "Swedish (Sweden)",
-    nativeLanguageName: "Svenska",
-  },
-  {
-    languageCode: "nl-NL",
-    languageName: "Dutch (Netherlands)",
-    nativeLanguageName: "Nederlands",
-  },
-  {
-    languageCode: "pl-PL",
-    languageName: "Polish (Poland)",
-    nativeLanguageName: "Polski",
-  },
-];
 
 export default SettingsDrawer;

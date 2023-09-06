@@ -91,9 +91,7 @@ function ChatNode({
           ) : (
             <>
               {" "}
-              <ReactMarkdown>
-                {content.replace(/```/, "```javascript")}
-              </ReactMarkdown>
+              <ReactMarkdown>{content}</ReactMarkdown>
               {!!gps && <CurrentLocationMap {...gps} />}
             </>
           )}

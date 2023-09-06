@@ -1,7 +1,8 @@
 import { Typography } from "@mui/material";
 import TinyButton from "../styled/TinyButton";
+import { Add } from "@mui/icons-material";
 
-function ChatButton({ onClick, icon: Icon, children }) {
+function ChatButton({ onClick, icon: Icon = Add, children }) {
   return (
     <Typography
       sx={{ pt: 2, cursor: "pointer" }}

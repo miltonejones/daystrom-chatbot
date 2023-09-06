@@ -1,56 +1,43 @@
+// Import the streamResponse function from another file
+import { curate } from "./curate";
+import { generateRequestOptions } from "./generateRequestOptions";
 import { streamResponse } from "./streamResponse";
 
-/**
- * Generates text using OpenAI's GPT-3 API
- * @async
- * @function
- * @param {string[]} messages - Array of strings representing the conversation history
- * @param {number} temperature - A number between 0 and 1 representing the creativity of the generated text
- * @returns {Promise<Object>} - A Promise that resolves with an object representing the generated text
- */
+// Define the generateText function with async/await functionality
 export const generateText = async (
-  msgs,
-  max_tokens = 128,
-  temperature = 0.9,
-  fn
+  msgs, // An array of chatlog objects
+  max_tokens = 128, // The maximum number of tokens allowed in a response
+  temperature = 0.9, // The "creativity" of the response
+  fn // A function to handle streaming responses (optional)
 ) => {
+  // Curate the chatlog array to exclude the timestamp property
   const messages = curate(msgs);
-  const model = "gpt-3.5-turbo-0301";
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`,
-    },
-    body: JSON.stringify({
-      messages,
-      temperature: Number(temperature),
-      model,
-      max_tokens: Number(max_tokens),
-      stream: !!fn,
-    }),
-  };
 
+  // Define the request options
+  const requestOptions = generateRequestOptions(
+    messages,
+    temperature,
+    max_tokens,
+    fn
+  );
+
+  // Send the completion request to the OpenAI API
   const response = await fetch(
     "https://api.openai.com/v1/chat/completions",
     requestOptions
   );
 
+  // If the response is not ok, throw an error
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error.message);
   }
 
+  // If fn is not defined, return the response as JSON
   if (!fn) {
-    const json = await response.json();
-    return json;
+    return await response.json();
   }
-  const json = streamResponse(response, fn);
-  return json;
-};
 
-const curate = (chatlog) =>
-  chatlog.map((log) => {
-    const { timestamp, ...rest } = log;
-    return rest;
-  });
+  // If fn is defined, stream the response and return it as JSON
+  return streamResponse(response, fn);
+};

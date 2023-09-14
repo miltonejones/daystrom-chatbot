@@ -90,8 +90,13 @@ export const useChatMachine = () => {
       },
       loadUserList: async () => {
         const credentials = await store.getItem("credentialsets");
+        console.log({ loadUserList: credentials });
         if (credentials) {
-          return JSON.parse(credentials);
+          try {
+            return JSON.parse(credentials);
+          } catch (ex) {
+            throw new Error(`Could not load user list because ${ex.message}`);
+          }
         }
         return {};
       },

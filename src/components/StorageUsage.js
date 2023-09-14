@@ -10,7 +10,7 @@ const StorageProgress = styled(LinearProgress)(({ theme }) => ({
 const StorageUsageContainer = styled(Card)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  height: "100%",
+  // height: "100%",
   padding: theme.spacing(2),
 }));
 

@@ -1,4 +1,4 @@
-import { Box, IconButton } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import { HomepageTextField } from "../styled/HomepageTextField";
 import AttachmentButton from "../styled/AttachmentButton";
 import { Mic, Send } from "@mui/icons-material";
@@ -32,6 +32,7 @@ function TextInput({
       <HomepageTextField
         autoComplete="off"
         fullWidth
+        autoFocus
         onChange={(e) => setChatQuestion(e.target.value)}
         value={chatQuestion}
         sx={{ minWidth: 360 }}
@@ -47,18 +48,28 @@ function TextInput({
           endAdornment: (
             <>
               {" "}
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                disabled={!chatQuestion}
+                edge="end"
+                endIcon={<Send />}
+                onClick={() => chatbot.send("ask")}
+                sx={{
+                  mr: 1,
+                  borderRadius: "1rem",
+                  p: (t) => t.spacing(0.5, 2.5),
+                  textTransform: "capitalize",
+                }}
+              >
+                send
+              </Button>
               <AttachmentButton
                 edge="end"
                 contentText={contentText}
                 fileLoaded={(object) => chatbot.setState("contentText", object)}
               />
-              <IconButton
-                disabled={!chatQuestion}
-                edge="end"
-                onClick={() => chatbot.send("ask")}
-              >
-                <Send />
-              </IconButton>
               <IconButton edge="end" onClick={() => setMode("voice")}>
                 <Mic />
               </IconButton>

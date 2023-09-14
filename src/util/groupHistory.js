@@ -2,8 +2,8 @@ import moment from "moment";
 
 export const groupHistory = (history, guid) => {
   const groupedHistory = Object.values(history).reduce((acc, convo) => {
-    const monthYear = moment(convo.mem[0].timestamp).format("MMMM YYYY");
-    const date = moment(convo.mem[0].timestamp).format("DD MMMM YYYY");
+    const monthYear = moment(convo.mem[0].timestamp).format("MMMM YY");
+    const date = moment(convo.mem[0].timestamp).format("DD MMMM YY");
     if (!acc[monthYear]) {
       acc[monthYear] = {};
     }
@@ -11,7 +11,7 @@ export const groupHistory = (history, guid) => {
       acc[monthYear][date] = [];
     }
     acc[monthYear][date].unshift(convo);
-    console.log({ keys: Object.keys(acc[monthYear]).sort().reverse() });
+    // console.log({ keys: Object.keys(acc[monthYear]).sort().reverse() });
     acc[monthYear] = Object.keys(acc[monthYear])
       .sort()
       .reverse()
@@ -24,7 +24,7 @@ export const groupHistory = (history, guid) => {
   }, {});
 
   const sortedGroupedHistory = Object.keys(groupedHistory)
-    .sort((a, b) => moment(b, "MMMM YYYY") - moment(a, "MMMM YYYY"))
+    .sort((a, b) => moment(b, "MMMM YY") - moment(a, "MMMM YY"))
     .reduce((obj, key) => {
       obj[key] = groupedHistory[key];
       return obj;
@@ -34,8 +34,7 @@ export const groupHistory = (history, guid) => {
     const dates = groupedHistory[monthYear];
     groupedHistory[monthYear] = Object.keys(dates)
       .sort(
-        (a, b) =>
-          moment(b, "DD MMMM YYYY HH:mm") - moment(a, "DD MMMM YYYY HH:mm")
+        (a, b) => moment(b, "DD MMMM YY HH:mm") - moment(a, "DD MMMM YY HH:mm")
       )
       .reverse()
       .reduce((obj, key) => {

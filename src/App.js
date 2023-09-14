@@ -6,12 +6,15 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Stack from "@mui/material/Stack";
 import TextMenu from "./TextMenu";
-import { Avatar, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import SettingsPopover from "./SettingsPopover";
 import { useChatMachine } from "./hooks/useChatMachine";
 import SideDrawer from "./SideDrawer";
 import { ErrorButton } from "./components/ErrorButton";
 import StyledAvatar from "./styled/StyledAvatar";
+import ForgotPasswordForm from "./components/ForgotPasswordForm";
+import ChoiceDialog from "./components/ChoiceDialog";
+import CredentialsList from "./components/CredentialsList";
 
 export default function App() {
   const chatbot = useChatMachine();
@@ -92,7 +95,11 @@ export default function App() {
         <ErrorButton chatbot={chatbot} />
       </Stack>
 
+      <CredentialsList chatbot={chatbot} />
+
       <ChatterBox {...chatProps} />
+      <ChoiceDialog chatbot={chatbot} />
+      <ForgotPasswordForm chatbot={chatbot} />
     </div>
   );
 }

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { MenuItem, Typography, Stack } from "@mui/material";
+import { MenuItem, Typography, Stack, ListItemIcon } from "@mui/material";
 import TinyButton from "./styled/TinyButton";
-import { ExpandMore } from "@mui/icons-material";
+import {
+  Create,
+  Delete,
+  Edit,
+  ExpandMore,
+  VoiceChat,
+} from "@mui/icons-material";
 import MobileMenu from "./styled/MobileMenu";
 import DeleteDialog from "./components/DeleteDialog";
 import RenameDialog from "./components/RenameDialog";
@@ -80,9 +86,28 @@ function TextMenu({ active, children: text, onChange, onDelete, onCreate }) {
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleRenameClick}>Rename conversation</MenuItem>
+        {/* <MenuItem onClick={handleRenameClick}>Rename conversation</MenuItem>
         <MenuItem onClick={handleDeleteClick}>Delete conversation</MenuItem>
-        <MenuItem onClick={handleCreateClick}>New chat</MenuItem>
+        <MenuItem onClick={handleCreateClick}>New chat</MenuItem> */}
+
+        <MenuItem onClick={handleRenameClick}>
+          <ListItemIcon>
+            <Edit fontSize="small" />
+          </ListItemIcon>
+          Rename conversation
+        </MenuItem>
+        <MenuItem onClick={handleDeleteClick}>
+          <ListItemIcon>
+            <Delete fontSize="small" />
+          </ListItemIcon>
+          Delete conversation
+        </MenuItem>
+        <MenuItem onClick={handleCreateClick}>
+          <ListItemIcon>
+            <VoiceChat fontSize="small" />
+          </ListItemIcon>
+          New chat
+        </MenuItem>
       </MobileMenu>
 
       <RenameDialog

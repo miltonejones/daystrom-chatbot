@@ -116,8 +116,12 @@ const dynamoStorage = () => {
   };
 
   const setItem = async (name, value) => {
-    const encryptedValue = encryptData(value);
-    await store.setItem(auth_key, name, encryptedValue);
+    try {
+      const encryptedValue = encryptData(value);
+      await store.setItem(auth_key, name, encryptedValue);
+    } catch (ex) {
+      throw new Error(`Could not set item "${name}" because ${ex.message}`);
+    }
   };
   return { getItem, setItem, removeItem };
 };

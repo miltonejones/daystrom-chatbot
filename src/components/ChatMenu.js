@@ -1,9 +1,8 @@
 import React from "react";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import { IconButton, MenuItem } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import MobileMenu from "../styled/MobileMenu";
-
-const options = ["Explain This", "Clean Up This Code", "Translate To..."];
+import { promptLabels, promptPresets } from "../constants";
 
 const ChatMenu = ({ onChange }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -30,8 +29,11 @@ const ChatMenu = ({ onChange }) => {
         open={open}
         onClose={() => handleClose()}
       >
-        {options.map((option) => (
-          <MenuItem key={option} onClick={() => handleClose(option)}>
+        {promptLabels.map((option) => (
+          <MenuItem
+            key={option}
+            onClick={() => handleClose(promptPresets[option])}
+          >
             {option}
           </MenuItem>
         ))}

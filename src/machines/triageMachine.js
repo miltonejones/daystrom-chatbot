@@ -1,5 +1,4 @@
 import { assign, createMachine } from "xstate";
-import { generateText } from "../util/generateText";
 
 export const triageMachine = createMachine(
   {

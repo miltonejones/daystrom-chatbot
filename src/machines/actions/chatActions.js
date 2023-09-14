@@ -1,5 +1,7 @@
 import { assign } from "xstate";
 import { attitudes, create, createSystemNode } from "../../chat";
+import { decryptCredentials } from "../../util/decryptCredentials";
+import getRecentConversations from "../../util/getRecentConversations";
 
 export const defaultProps = {
   lang: "en-US",
@@ -22,6 +24,7 @@ export const chatActions = {
     return {
       userData: event.data,
       ...props,
+      chatHistory: JSON.parse(localStorage.getItem("chatHistory") || "[]"),
     };
   }),
   assignTitle: assign((context, event) => {
@@ -40,6 +43,9 @@ export const chatActions = {
   clearLogin: assign(() => {
     return {
       loggedin: false,
+      username: null,
+      fullname: null,
+      newuser: false,
     };
   }),
   assignLogin: assign((_, event) => {
@@ -48,7 +54,10 @@ export const chatActions = {
       ...event.data,
     };
   }),
-  assignProblem: assign((context, event) => {
+  assignNewUser: assign({
+    newuser: true,
+  }),
+  assignProblem: assign((_, event) => {
     return {
       errorMessage: event.data.message,
       stack: event.data.stack,
@@ -86,7 +95,7 @@ export const chatActions = {
     transcript: event.text,
   })),
 
-  assignPrompt: assign((context, event) => ({
+  assignPrompt: assign((context) => ({
     prompt: context.transcript,
   })),
 
@@ -130,8 +139,24 @@ export const chatActions = {
     payload: {},
     contentText: "",
   })),
-  assignConversations: assign((_, event) => ({
-    conversations: event.data,
+  assignConversations: assign((_, event) => {
+    const trimmed = getRecentConversations(event.data);
+    console.log({ trimmed });
+    // console.log(
+    //   JSON.stringify(
+    //     {
+    //       conversations: event.data,
+    //     },
+    //     0,
+    //     2
+    //   )
+    // );
+    return {
+      conversations: trimmed,
+    };
+  }),
+  assignBlankConversations: assign((_, event) => ({
+    conversations: {},
   })),
   assignConversation: assign((_, event) => ({
     payload: event.payload,
@@ -149,6 +174,16 @@ export const chatActions = {
   assignPayload: assign((_, event) => {
     return {
       ...event.data.result,
+    };
+  }),
+
+  assignUserList: assign((_, event) => {
+    const encryptedCredentials = event.data;
+    const credentials = decryptCredentials(event.data);
+    console.log(JSON.stringify({ credentials, encryptedCredentials }, 0, 2));
+    return {
+      credentials,
+      encryptedCredentials,
     };
   }),
 
@@ -176,12 +211,13 @@ export const chatActions = {
   appendPrompt: assign((context, event) => {
     const chat = create(context.prompt);
     const query = [createSystemNode(context), ...context.chatmem, chat];
-
+    const chatHistory = [...context.chatHistory, context.prompt];
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
     return {
       prompt: "",
       query,
       chat,
-      chatHistory: [...context.chatHistory, context.prompt],
+      chatHistory,
       chatmem: [...context.chatmem, chat],
     };
   }),

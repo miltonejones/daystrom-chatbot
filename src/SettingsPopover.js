@@ -3,9 +3,10 @@ import IconButton from "@mui/material/IconButton";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Box from "@mui/material/Box";
 import SettingsDrawer from "./components/SettingsDrawer";
-import { Menu, MenuItem } from "@mui/material";
+import { ListItemIcon, MenuItem, Typography } from "@mui/material";
 import LoginDialog from "./components/LoginDialog";
 import MobileMenu from "./styled/MobileMenu";
+import { AccountCircle, Lock, Settings } from "@mui/icons-material";
 
 const SettingsPopover = ({ items, chatbot }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -13,6 +14,7 @@ const SettingsPopover = ({ items, chatbot }) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const loginOpen = chatbot.state.matches("login form");
+  const local = window.location.href.indexOf("localhost") > 0;
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -25,6 +27,11 @@ const SettingsPopover = ({ items, chatbot }) => {
 
   const handleMenuClick = () => {
     setSettingsOpen(true);
+    setAnchorEl(null);
+  };
+
+  const handleCredentialsClick = () => {
+    chatbot.setState("creds", !chatbot.creds);
     setAnchorEl(null);
   };
 
@@ -49,16 +56,42 @@ const SettingsPopover = ({ items, chatbot }) => {
       <IconButton onClick={handleMenuOpen} color="inherit">
         <SettingsIcon />
       </IconButton>
-
       <MobileMenu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
+        {!!chatbot.fullname && (
+          <Typography
+            variant="caption"
+            sx={{ p: (t) => t.spacing(2, 0, 0, 2) }}
+          >
+            Logged in as "{chatbot.fullname}"
+          </Typography>
+        )}
+
         <MenuItem onClick={handleLoginOpen}>
+          <ListItemIcon>
+            <AccountCircle fontSize="small" />
+          </ListItemIcon>
           {chatbot.loggedin ? "Log out" : "Log in"}
         </MenuItem>
-        <MenuItem onClick={handleMenuClick}>Settings</MenuItem>
+
+        <MenuItem onClick={handleMenuClick}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+
+        {!!local && (
+          <MenuItem onClick={handleCredentialsClick}>
+            <ListItemIcon>
+              <Lock fontSize="small" />
+            </ListItemIcon>
+            Credentials
+          </MenuItem>
+        )}
       </MobileMenu>
 
       <SettingsDrawer

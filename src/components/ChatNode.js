@@ -35,6 +35,7 @@ function ChatNode({
   index,
   timestamp,
   loggedin,
+  initials = "MJ",
 }) {
   const [isEditing, setIsEditing] = React.useState(false);
   const [innerText, setInnerText] = React.useState();
@@ -130,7 +131,7 @@ function ChatNode({
       </Box>
 
       {role === "user" && (
-        <Avatar sizes="small"> {loggedin ? "MJ" : <Person />}</Avatar>
+        <Avatar sizes="small"> {loggedin ? initials : <Person />}</Avatar>
       )}
     </Box>
   );

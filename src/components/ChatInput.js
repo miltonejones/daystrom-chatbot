@@ -1,8 +1,31 @@
-import { CircularProgress, Collapse, IconButton, Stack } from "@mui/material";
+import {
+  CircularProgress,
+  Collapse,
+  IconButton,
+  Stack,
+  styled,
+} from "@mui/material";
 import AttachmentButton from "../styled/AttachmentButton";
 import { Keyboard, Mic } from "@mui/icons-material";
 import TextInput from "./TextInput";
 import Flex from "../styled/Flex";
+import processValue from "../util/processValue";
+
+export const ChatStack = styled(Stack)(({}) => ({
+  width: "calc(100vw - 32px)",
+  position: "fixed",
+  bottom: 0,
+  left: 0,
+  backgroundColor: "#fff",
+  borderTop: "1px solid #e0e0e0",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "8px 16px",
+}));
+
+export const LongCollapse = styled(Collapse)(({}) => ({
+  width: "100vw",
+}));
 
 function ChatInput({
   chatbot,
@@ -15,32 +38,13 @@ function ChatInput({
   const { contentText } = chatbot.state.context;
 
   return (
-    <Stack
-      direction="row"
-      sx={{
-        width: "calc(100vw - 32px)",
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        backgroundColor: "#fff",
-        borderTop: "1px solid #e0e0e0",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "8px 16px",
-      }}
-    >
-      <Collapse
-        sx={{
-          width: "100vw",
-        }}
-        orientation="horizontal"
-        in={!chatbot.chatEnabled}
-      >
+    <ChatStack direction="row">
+      <LongCollapse orientation="horizontal" in={!chatbot.chatEnabled}>
         <Flex>
           <CircularProgress size={20} />
-          Please wait...
+          Please wait... {processValue(chatbot.state.value)}
         </Flex>
-      </Collapse>
+      </LongCollapse>
       <Collapse
         orientation="horizontal"
         in={mode !== "voice" && chatbot.chatEnabled}
@@ -54,10 +58,7 @@ function ChatInput({
         />
       </Collapse>
 
-      <Collapse
-        sx={{
-          width: "100vw",
-        }}
+      <LongCollapse
         orientation="horizontal"
         in={mode === "voice" && chatbot.chatEnabled}
       >
@@ -87,8 +88,8 @@ function ChatInput({
             <Keyboard />
           </IconButton>
         </Stack>
-      </Collapse>
-    </Stack>
+      </LongCollapse>
+    </ChatStack>
   );
 }
 

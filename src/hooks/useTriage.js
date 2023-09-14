@@ -14,8 +14,7 @@ export const useTriage = () => {
         const convo = [
           {
             role: "system",
-            content:
-              "i explain everything as sarcastically verbose as possible",
+            content: "i explain everything as gothically dramatic as possible",
           },
           create(`I receieved this error
         ${context.errorMessage}

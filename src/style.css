@@ -36,6 +36,7 @@ ul li.attach {
   overflow: hidden;
 }
 
+li.attach:hover,
 li.normal:hover,
 li.normal.selected {
   background-color: var(--dark-background);
@@ -52,10 +53,22 @@ li.attach:before {
   font-style: normal;
 }
 
+.treenode:before {
+  content: "➕";
+  margin-right: 2px;
+  font-size: 0.5rem;
+}
+
+.treenode.expanded:before {
+  content: "➖";
+  margin-right: 2px;
+  font-size: 0.5rem;
+}
+
 .clip:before,
 li.attach:after {
   content: "📎";
-  margin-right: 4px;
+  margin-right: 2px;
 }
 
 p {

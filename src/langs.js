@@ -5,6 +5,11 @@ export const langs = [
     nativeLanguageName: "English",
   },
   {
+    languageCode: "en-GB",
+    languageName: "English (Aus)",
+    nativeLanguageName: "English",
+  },
+  {
     languageCode: "es-ES",
     languageName: "Spanish (Spain)",
     nativeLanguageName: "Español",
@@ -18,6 +23,11 @@ export const langs = [
     languageCode: "de-DE",
     languageName: "German (Germany)",
     nativeLanguageName: "Deutsch",
+  },
+  {
+    languageCode: "id-ID",
+    languageName: "Indonesian",
+    nativeLanguageName: "Indonesian",
   },
   {
     languageCode: "zh-CN",

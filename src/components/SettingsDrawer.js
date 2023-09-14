@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import { Divider, Stack, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import { Switch, FormControlLabel } from "@mui/material";
 import CustomSlider from "./CustomSlider";
 import { langs } from "../langs";
 import DropdownSelect from "./DropdownSelect";
 import { Option } from "./Option";
+import processValue from "../util/processValue";
 
 const SettingsDrawer = ({
   items,
@@ -18,19 +16,8 @@ const SettingsDrawer = ({
   handleSelectChange,
   isOpen,
 }) => {
-  // const [anchorEl, setAnchorEl] = useState(null);
-  const {
-    attitude,
-    // setAttitude,
-    temp,
-    setTemp,
-    tokens,
-    setTokens,
-    lang,
-    setLang,
-  } = chatbot;
+  const { attitude, temp, setTemp, tokens, setTokens, lang } = chatbot;
 
-  // const isOpen = Boolean(anchorEl);
   const id = isOpen ? "settings-popover" : undefined;
 
   return (
@@ -70,7 +57,7 @@ const SettingsDrawer = ({
 
         <DropdownSelect
           value={lang}
-          onChange={handleSelectChange}
+          onChange={(e) => chatbot.setLang(e.target.value)}
           items={langs.map((item) => ({
             value: item.languageCode,
             label: item.nativeLanguageName,
@@ -107,11 +94,15 @@ const SettingsDrawer = ({
             </Typography>
 
             <Typography variant="caption">
-              <b> {JSON.stringify(chatbot.state.value)}</b>
+              <b> {processValue(chatbot.state.value)}</b>
+            </Typography>
+            <Typography variant="caption">
+              {chatbot.state.description}
             </Typography>
           </Stack>
         </Flex>
       </Stack>
+      {/* <pre variant="caption">{JSON.stringify(chatbot.state.value, 0, 2)}</pre> */}
     </Drawer>
   );
 };

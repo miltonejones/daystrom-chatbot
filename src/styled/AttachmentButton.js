@@ -1,8 +1,16 @@
 import React from "react";
 import IconButton from "@mui/material/IconButton";
 import AttachmentIcon from "@mui/icons-material/Attachment";
-import { Box, Card, Dialog, Modal, Stack, Typography } from "@mui/material";
-import { Close, Code } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Card,
+  Dialog,
+  Modal,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { Close, Code, Save } from "@mui/icons-material";
 
 function truncateString(str, limit) {
   if (str.length > limit) {
@@ -13,6 +21,7 @@ function truncateString(str, limit) {
 }
 
 function AttachmentButton({ fileLoaded, contentText, ...props }) {
+  const ref = React.useRef(null);
   const fileInputRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
 
@@ -37,6 +46,15 @@ function AttachmentButton({ fileLoaded, contentText, ...props }) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleSave = () => {
+    const text = ref.current.innerText;
+    fileLoaded({
+      ...contentText,
+      size: text.length,
+      text,
+    });
   };
 
   if (contentText?.name) {
@@ -84,12 +102,15 @@ function AttachmentButton({ fileLoaded, contentText, ...props }) {
               <Code />
               <Typography>{contentText.name}</Typography>
               <Box sx={{ flexGrow: 1 }} />
+              <IconButton onClick={handleSave}>
+                <Save />
+              </IconButton>
               <IconButton onClick={handleClose}>
                 <Close />
               </IconButton>
             </Stack>
 
-            <Box
+            <Stack
               sx={{
                 width: "calc(100% - 32px)",
                 overflow: "auto",
@@ -98,13 +119,23 @@ function AttachmentButton({ fileLoaded, contentText, ...props }) {
               }}
             >
               <pre
+                ref={ref}
+                contentEditable
                 style={{
                   maxHeight: 400,
                 }}
               >
                 {contentText.text}
               </pre>
-            </Box>
+              {/* <Button
+                variant="contained"
+                onClick={() => {
+                  alert(ref.current.innerText);
+                }}
+              >
+                save
+              </Button> */}
+            </Stack>
           </Box>
         </Dialog>
       </>

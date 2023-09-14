@@ -13,8 +13,8 @@ import { getAddressFromLatLng } from "../util/getAddressFromLatLng";
 import { generateText } from "../util/generateText";
 import { useTriage } from "./useTriage";
 import CryptoJS from "crypto-js";
-
-const COOKIE_NAME = "chat-conv-x";
+import { COOKIE_NAME } from "../constants";
+import getRecentConversations from "../util/getRecentConversations";
 
 export const useChatMachine = () => {
   const SpeechRecognition =
@@ -39,7 +39,11 @@ export const useChatMachine = () => {
 
   const [state, send] = useMachine(chatMachine, {
     services: {
-      getUserData: async () => {
+      getUserData: async (context) => {
+        const { userData = {} } = context;
+        if (Object.keys(userData).length) {
+          return userData;
+        }
         const place = await getLocation();
         return place;
       },
@@ -47,8 +51,15 @@ export const useChatMachine = () => {
       interfaceLoaded: () => {
         attachClicks();
       },
-      processLogin: async (context) => {
-        const { password, username } = context;
+      createUser: async (context) => {
+        const {
+          password,
+          username,
+          email,
+          fullname,
+          encryptedCredentials,
+          credentials,
+        } = context;
         const encryptedUsername = CryptoJS.AES.encrypt(
           username,
           process.env.REACT_APP_ENCRYPTION_KEY
@@ -57,15 +68,67 @@ export const useChatMachine = () => {
           password,
           process.env.REACT_APP_ENCRYPTION_KEY
         ).toString();
+        if (credentials[encryptedUsername]) {
+          return alert(`User ${username} already exists!`);
+        }
 
+        const lib = {
+          ...encryptedCredentials,
+          [encryptedUsername]: { encryptedPassword, email, fullname },
+        };
+
+        await store.setItem("credentialsets", JSON.stringify(lib));
+      },
+      dropLogin: async (context) => {
+        const { loginKey, encryptedCredentials } = context;
+        delete encryptedCredentials[loginKey];
+        await store.setItem(
+          "credentialsets",
+          JSON.stringify(encryptedCredentials)
+        );
+        return encryptedCredentials;
+      },
+      loadUserList: async () => {
+        const credentials = await store.getItem("credentialsets");
+        if (credentials) {
+          return JSON.parse(credentials);
+        }
+        return {};
+      },
+      processLogin: async (context) => {
+        const { password, username, credentials } = context;
+        const encryptedUsername = CryptoJS.AES.encrypt(
+          username,
+          process.env.REACT_APP_ENCRYPTION_KEY
+        ).toString();
+        const encryptedPassword = CryptoJS.AES.encrypt(
+          password,
+          process.env.REACT_APP_ENCRYPTION_KEY
+        ).toString();
         const ok =
-          context.username === "mjones" && context.password === "admin";
+          credentials[username] && credentials[username].password === password;
         if (!ok) {
+          console.log(
+            JSON.stringify(
+              {
+                credentials,
+                username,
+                password,
+                encryptedUsername,
+                encryptedPassword,
+              },
+              0,
+              2
+            )
+          );
           throw new Error("log in failed");
         }
+
+        // alert(JSON.stringify(credentials[username], 0, 2));
         return {
           encryptedUsername,
           encryptedPassword,
+          ...credentials[username],
         };
       },
 
@@ -100,13 +163,15 @@ export const useChatMachine = () => {
       },
 
       getConversations: async (context) => {
-        const { username } = context;
+        const { username, loggedin } = context;
+        const localDb = localStorage.getItem(COOKIE_NAME);
 
-        const json = context.loggedin
-          ? await store.getItem(username)
-          : localStorage.getItem(COOKIE_NAME);
+        if (loggedin) {
+          const remoteDb = await store.getItem(username);
+          return JSON.parse(remoteDb || localDb || "{}");
+        }
 
-        return JSON.parse(json || "{}");
+        return JSON.parse(localDb || "{}");
       },
 
       updatePayload: async (context) => {
@@ -182,14 +247,16 @@ export const useChatMachine = () => {
       },
 
       persistPayload: async (context) => {
-        const { username } = context;
+        const { conversations, username } = context;
         if (!context.loggedin) {
           return localStorage.setItem(
             COOKIE_NAME,
             JSON.stringify(context.conversations)
           );
         }
-        await store.setItem(username, JSON.stringify(context.conversations));
+        const trimmed = getRecentConversations(conversations);
+        console.log(JSON.stringify({ trimmed }, 0, 2));
+        await store.setItem(username, JSON.stringify(trimmed));
       },
 
       speakError: async (context) => {
@@ -219,6 +286,10 @@ export const useChatMachine = () => {
   };
 
   const setState = (name, value) => {
+    if (!state.can("set state value"))
+      return alert(
+        `Cannot set "${name}" state from ${JSON.stringify(state.value)}.`
+      );
     send("set state value", { name, value });
   };
 

@@ -100,7 +100,9 @@ const dynamoStorage = () => {
   const auth_key = "anon-api-chatbot";
 
   const getItem = async (name) => {
+    console.log({ name });
     const encryptedValue = await store.getItem(auth_key, name);
+    console.log({ encryptedValue });
     if (encryptedValue) {
       return decryptData(encryptedValue);
     }

@@ -6,6 +6,7 @@ export const encryptData = (data) => {
   return ciphertext.toString();
 };
 export const decryptData = (encryptedData) => {
+  console.log({ ENCRYPTION_KEY });
   const bytes = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY);
   const plaintext = bytes.toString(CryptoJS.enc.Utf8);
   return plaintext;

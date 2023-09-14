@@ -169,10 +169,10 @@ const ConversationList = ({ chatbot }) => {
                   );
                 })}
               </Collapse>
-              <StorageUsage conversations={history} />
             </Box>
           );
         })}
+        <StorageUsage conversations={history} />
       </Box>
     </>
   );

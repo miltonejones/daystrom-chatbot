@@ -180,7 +180,7 @@ export const chatActions = {
   assignUserList: assign((_, event) => {
     const encryptedCredentials = event.data;
     const credentials = decryptCredentials(event.data);
-    console.log({ encryptedCredentials, credentials });
+    // console.log({ encryptedCredentials, credentials });
     // console.log(JSON.stringify({ credentials, encryptedCredentials }, 0, 2));
     return {
       credentials,
